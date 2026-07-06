@@ -1,51 +1,172 @@
 {
   "info": {
     "name": "رابطة سوق السيارات — Car Marketplace API",
-    "description": "Complete REST API collection for the Car Marketplace mobile app. Set {{base_url}}, {{token}}, and {{locale}} (default: ar) in your environment before running requests.",
+    "description": "Complete REST API collection for the Car Marketplace project — mobile app + admin dashboard.\n\nLive server: https://api-rabta.rabtetsouqelsayarat.com\n\nSet {{base_url}} to switch between local dev and the live server. {{mobile_token}} and {{admin_token}} auto-populate after Login/Admin Login thanks to test scripts — you do not need to copy tokens manually.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_postman_id": "cars-marketplace-v1"
+    "_postman_id": "cars-marketplace-v2"
   },
   "variable": [
-    { "key": "base_url", "value": "http://localhost:8000/api/v1/mobile", "type": "string" },
-    { "key": "token",    "value": "",                                     "type": "string" },
-    { "key": "locale",   "value": "ar",                                   "type": "string" }
+    {
+      "key": "base_url",
+      "value": "https://api-rabta.rabtetsouqelsayarat.com/api",
+      "type": "string"
+    },
+    {
+      "key": "mobile_url",
+      "value": "{{base_url}}/v1/mobile",
+      "type": "string"
+    },
+    {
+      "key": "admin_url",
+      "value": "{{base_url}}/admin",
+      "type": "string"
+    },
+    {
+      "key": "core_url",
+      "value": "{{base_url}}/core",
+      "type": "string"
+    },
+    {
+      "key": "mobile_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "admin_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "locale",
+      "value": "ar",
+      "type": "string"
+    }
   ],
   "item": [
     {
-      "name": "🔐 Auth",
+      "name": "🌍 Core",
+      "item": [
+        {
+          "name": "App Config (Maintenance / Version Gate)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              }
+            ],
+            "url": {
+              "raw": "{{core_url}}/app-config?platform=android&version=1.0.0&language={{locale}}",
+              "host": [
+                "{{core_url}}"
+              ],
+              "path": [
+                "app-config"
+              ],
+              "query": [
+                {
+                  "key": "platform",
+                  "value": "android"
+                },
+                {
+                  "key": "version",
+                  "value": "1.0.0"
+                },
+                {
+                  "key": "language",
+                  "value": "{{locale}}"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🔐 Mobile Auth",
       "item": [
         {
           "name": "Register",
           "request": {
             "method": "POST",
-            "url": { "raw": "{{base_url}}/auth/register" },
             "header": [
-              { "key": "Accept",          "value": "application/json" },
-              { "key": "Accept-Language", "value": "{{locale}}" },
-              { "key": "Content-Type",    "value": "application/json" }
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
+            "url": {
+              "raw": "{{mobile_url}}/auth/register",
+              "host": [
+                "{{mobile_url}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Ahmed Mohamed\",\n  \"phone\": \"01012345678\",\n  \"email\": \"ahmed@example.com\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\"\n}"
+              "raw": "{\n  \"name\": \"Ahmed Mohamed\",\n  \"phone\": \"01012345678\",\n  \"email\": \"ahmed@example.com\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\",\n  \"fcm_token\": \"optional-device-fcm-token\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
-          },
-          "response": [
-            {
-              "name": "201 Created — Success",
-              "status": "Created",
-              "code": 201,
-              "body": "{\n  \"success\": true,\n  \"message\": \"تم إنشاء الحساب بنجاح.\",\n  \"data\": {\n    \"user\": {\n      \"id\": 1,\n      \"name\": \"Ahmed Mohamed\",\n      \"email\": \"ahmed@example.com\",\n      \"phone\": \"01012345678\",\n      \"is_active\": true,\n      \"notification_enabled\": true,\n      \"theme\": \"light\",\n      \"avatar_url\": null,\n      \"roles\": [\"user\"],\n      \"created_at\": \"2024-01-01T00:00:00.000000Z\"\n    },\n    \"token\": \"1|abc123...plainTextToken\"\n  },\n  \"meta\": null,\n  \"errors\": null\n}"
-            },
-            {
-              "name": "422 Validation Error",
-              "status": "Unprocessable Entity",
-              "code": 422,
-              "body": "{\n  \"success\": false,\n  \"message\": \"فشل التحقق من صحة البيانات.\",\n  \"data\": null,\n  \"meta\": null,\n  \"errors\": {\n    \"email\": [\"قيمة حقل البريد الإلكتروني مسجلة مسبقاً.\"],\n    \"phone\": [\"قيمة حقل رقم الهاتف مسجلة مسبقاً.\"]\n  }\n}"
-            }
-          ]
+          }
         },
         {
           "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{mobile_url}}/auth/login",
+              "host": [
+                "{{mobile_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"ahmed@example.com\",\n  \"password\": \"password123\",\n  \"fcm_token\": \"optional-device-fcm-token\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
           "event": [
             {
               "listen": "test",
@@ -53,38 +174,11 @@
                 "exec": [
                   "const json = pm.response.json();",
                   "if (json.success && json.data && json.data.token) {",
-                  "    pm.collectionVariables.set('token', json.data.token);",
+                  "    pm.collectionVariables.set('mobile_token', json.data.token);",
                   "}"
                 ],
                 "type": "text/javascript"
               }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "url": { "raw": "{{base_url}}/auth/login" },
-            "header": [
-              { "key": "Accept",          "value": "application/json" },
-              { "key": "Accept-Language", "value": "{{locale}}" },
-              { "key": "Content-Type",    "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"ahmed@example.com\",\n  \"password\": \"password123\"\n}"
-            }
-          },
-          "response": [
-            {
-              "name": "200 OK — Success",
-              "status": "OK",
-              "code": 200,
-              "body": "{\n  \"success\": true,\n  \"message\": \"تم تسجيل الدخول بنجاح.\",\n  \"data\": {\n    \"user\": {\n      \"id\": 1,\n      \"name\": \"Ahmed Mohamed\",\n      \"email\": \"ahmed@example.com\",\n      \"phone\": \"01012345678\",\n      \"is_active\": true,\n      \"notification_enabled\": true,\n      \"theme\": \"light\",\n      \"avatar_url\": null,\n      \"roles\": [\"user\"],\n      \"created_at\": \"2024-01-01T00:00:00.000000Z\"\n    },\n    \"token\": \"1|abc123...plainTextToken\"\n  },\n  \"meta\": null,\n  \"errors\": null\n}"
-            },
-            {
-              "name": "401 Unauthorized — Bad Credentials",
-              "status": "Unauthorized",
-              "code": 401,
-              "body": "{\n  \"success\": false,\n  \"message\": \"بيانات الاعتماد غير صحيحة.\",\n  \"data\": null,\n  \"meta\": null,\n  \"errors\": null\n}"
             }
           ]
         },
@@ -92,369 +186,1559 @@
           "name": "Send OTP",
           "request": {
             "method": "POST",
-            "url": { "raw": "{{base_url}}/auth/otp/send" },
             "header": [
-              { "key": "Accept",          "value": "application/json" },
-              { "key": "Accept-Language", "value": "{{locale}}" },
-              { "key": "Content-Type",    "value": "application/json" }
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
+            "url": {
+              "raw": "{{mobile_url}}/auth/otp/send",
+              "host": [
+                "{{mobile_url}}"
+              ],
+              "path": [
+                "auth",
+                "otp",
+                "send"
+              ]
+            },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"phone\": \"01012345678\"\n}"
+              "raw": "{\n  \"email\": \"ahmed@example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
-          },
-          "response": [
-            {
-              "name": "200 OK — OTP Sent",
-              "status": "OK",
-              "code": 200,
-              "body": "{\n  \"success\": true,\n  \"message\": \"تم إرسال رمز التحقق بنجاح.\",\n  \"data\": null,\n  \"meta\": null,\n  \"errors\": null\n}"
-            }
-          ]
+          }
         },
         {
           "name": "Verify OTP",
           "request": {
             "method": "POST",
-            "url": { "raw": "{{base_url}}/auth/otp/verify" },
             "header": [
-              { "key": "Accept",          "value": "application/json" },
-              { "key": "Accept-Language", "value": "{{locale}}" },
-              { "key": "Content-Type",    "value": "application/json" }
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
+            "url": {
+              "raw": "{{mobile_url}}/auth/otp/verify",
+              "host": [
+                "{{mobile_url}}"
+              ],
+              "path": [
+                "auth",
+                "otp",
+                "verify"
+              ]
+            },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"phone\": \"01012345678\",\n  \"otp_code\": \"1234\"\n}"
+              "raw": "{\n  \"email\": \"ahmed@example.com\",\n  \"otp_code\": \"1234\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
-          },
-          "response": [
-            {
-              "name": "200 OK — OTP Verified",
-              "status": "OK",
-              "code": 200,
-              "body": "{\n  \"success\": true,\n  \"message\": \"تم التحقق من الرمز بنجاح.\",\n  \"data\": null,\n  \"meta\": null,\n  \"errors\": null\n}"
-            },
-            {
-              "name": "400 Bad Request — Invalid OTP",
-              "status": "Bad Request",
-              "code": 400,
-              "body": "{\n  \"success\": false,\n  \"message\": \"رمز التحقق غير صالح أو منتهي الصلاحية.\",\n  \"data\": null,\n  \"meta\": null,\n  \"errors\": null\n}"
-            }
-          ]
+          }
         },
         {
           "name": "Forgot Password",
           "request": {
             "method": "POST",
-            "url": { "raw": "{{base_url}}/auth/forgot-password" },
             "header": [
-              { "key": "Accept",          "value": "application/json" },
-              { "key": "Accept-Language", "value": "{{locale}}" },
-              { "key": "Content-Type",    "value": "application/json" }
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
+            "url": {
+              "raw": "{{mobile_url}}/auth/forgot-password",
+              "host": [
+                "{{mobile_url}}"
+              ],
+              "path": [
+                "auth",
+                "forgot-password"
+              ]
+            },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"ahmed@example.com\"\n}"
+              "raw": "{\n  \"email\": \"ahmed@example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
-          },
-          "response": [
-            {
-              "name": "200 OK — Reset Link Sent",
-              "status": "OK",
-              "code": 200,
-              "body": "{\n  \"success\": true,\n  \"message\": \"تم إرسال رابط إعادة تعيين كلمة المرور.\",\n  \"data\": null,\n  \"meta\": null,\n  \"errors\": null\n}"
-            }
-          ]
+          }
         },
         {
           "name": "Reset Password",
           "request": {
             "method": "POST",
-            "url": { "raw": "{{base_url}}/auth/reset-password" },
             "header": [
-              { "key": "Accept",          "value": "application/json" },
-              { "key": "Accept-Language", "value": "{{locale}}" },
-              { "key": "Content-Type",    "value": "application/json" }
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
+            "url": {
+              "raw": "{{mobile_url}}/auth/reset-password",
+              "host": [
+                "{{mobile_url}}"
+              ],
+              "path": [
+                "auth",
+                "reset-password"
+              ]
+            },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"token\": \"abc123resettoken\",\n  \"password\": \"newpassword123\",\n  \"password_confirmation\": \"newpassword123\"\n}"
+              "raw": "{\n  \"email\": \"ahmed@example.com\",\n  \"otp_code\": \"1234\",\n  \"password\": \"newpassword123\",\n  \"password_confirmation\": \"newpassword123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
-          },
-          "response": [
-            {
-              "name": "200 OK — Password Reset",
-              "status": "OK",
-              "code": 200,
-              "body": "{\n  \"success\": true,\n  \"message\": \"تم إعادة تعيين كلمة المرور بنجاح.\",\n  \"data\": null,\n  \"meta\": null,\n  \"errors\": null\n}"
+          }
+        },
+        {
+          "name": "Accept Policy",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{mobile_url}}/profile/accept-policy",
+              "host": [
+                "{{mobile_url}}"
+              ],
+              "path": [
+                "profile",
+                "accept-policy"
+              ]
             },
-            {
-              "name": "400 Bad Request — Invalid Token",
-              "status": "Bad Request",
-              "code": 400,
-              "body": "{\n  \"success\": false,\n  \"message\": \"رمز إعادة التعيين غير صالح أو منتهي الصلاحية.\",\n  \"data\": null,\n  \"meta\": null,\n  \"errors\": null\n}"
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{mobile_token}}",
+                  "type": "string"
+                }
+              ]
             }
-          ]
+          }
         },
         {
           "name": "Logout",
           "request": {
             "method": "POST",
-            "url": { "raw": "{{base_url}}/auth/logout" },
             "header": [
-              { "key": "Accept",          "value": "application/json" },
-              { "key": "Accept-Language", "value": "{{locale}}" },
-              { "key": "Authorization",   "value": "Bearer {{token}}" }
-            ]
-          },
-          "response": [
-            {
-              "name": "200 OK — Logged Out",
-              "status": "OK",
-              "code": 200,
-              "body": "{\n  \"success\": true,\n  \"message\": \"تم تسجيل الخروج بنجاح.\",\n  \"data\": null,\n  \"meta\": null,\n  \"errors\": null\n}"
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{mobile_url}}/auth/logout",
+              "host": [
+                "{{mobile_url}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{mobile_token}}",
+                  "type": "string"
+                }
+              ]
             }
-          ]
+          }
         }
       ]
     },
     {
-      "name": "👤 Profile",
+      "name": "👤 Mobile Profile",
       "item": [
         {
           "name": "Get Profile",
           "request": {
             "method": "GET",
-            "url": { "raw": "{{base_url}}/profile" },
             "header": [
-              { "key": "Accept",          "value": "application/json" },
-              { "key": "Accept-Language", "value": "{{locale}}" },
-              { "key": "Authorization",   "value": "Bearer {{token}}" }
-            ]
-          },
-          "response": [
-            {
-              "name": "200 OK — Profile",
-              "status": "OK",
-              "code": 200,
-              "body": "{\n  \"success\": true,\n  \"message\": \"تم استرداد الملف الشخصي بنجاح.\",\n  \"data\": {\n    \"id\": 1,\n    \"name\": \"Ahmed Mohamed\",\n    \"email\": \"ahmed@example.com\",\n    \"phone\": \"01012345678\",\n    \"is_active\": true,\n    \"notification_enabled\": true,\n    \"theme\": \"light\",\n    \"avatar_url\": \"http://localhost:8000/storage/1/avatar.jpg\",\n    \"roles\": [\"user\"],\n    \"created_at\": \"2024-01-01T00:00:00.000000Z\"\n  },\n  \"meta\": null,\n  \"errors\": null\n}"
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              }
+            ],
+            "url": {
+              "raw": "{{mobile_url}}/profile",
+              "host": [
+                "{{mobile_url}}"
+              ],
+              "path": [
+                "profile"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{mobile_token}}",
+                  "type": "string"
+                }
+              ]
             }
-          ]
+          }
         },
         {
           "name": "Update Profile",
           "request": {
-            "method": "PUT",
-            "url": { "raw": "{{base_url}}/profile" },
+            "method": "POST",
             "header": [
-              { "key": "Accept",          "value": "application/json" },
-              { "key": "Accept-Language", "value": "{{locale}}" },
-              { "key": "Authorization",   "value": "Bearer {{token}}" }
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              }
             ],
+            "url": {
+              "raw": "{{mobile_url}}/profile",
+              "host": [
+                "{{mobile_url}}"
+              ],
+              "path": [
+                "profile"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{mobile_token}}",
+                  "type": "string"
+                }
+              ]
+            },
             "body": {
               "mode": "formdata",
               "formdata": [
-                { "key": "name",   "value": "Ahmed Updated",  "type": "text" },
-                { "key": "phone",  "value": "01098765432",    "type": "text" },
-                { "key": "avatar", "type": "file",            "src": "" }
+                {
+                  "key": "name",
+                  "value": "Ahmed Mohamed",
+                  "type": "text"
+                },
+                {
+                  "key": "phone",
+                  "value": "01012345678",
+                  "type": "text"
+                },
+                {
+                  "key": "avatar",
+                  "type": "file",
+                  "src": ""
+                },
+                {
+                  "key": "_method",
+                  "value": "PUT",
+                  "type": "text"
+                }
               ]
             }
-          },
-          "response": [
-            {
-              "name": "200 OK — Profile Updated",
-              "status": "OK",
-              "code": 200,
-              "body": "{\n  \"success\": true,\n  \"message\": \"تم تحديث الملف الشخصي بنجاح.\",\n  \"data\": {\n    \"id\": 1,\n    \"name\": \"Ahmed Updated\",\n    \"email\": \"ahmed@example.com\",\n    \"phone\": \"01098765432\",\n    \"is_active\": true,\n    \"notification_enabled\": true,\n    \"theme\": \"light\",\n    \"avatar_url\": \"http://localhost:8000/storage/1/conversions/avatar.jpg\",\n    \"roles\": [\"user\"],\n    \"created_at\": \"2024-01-01T00:00:00.000000Z\"\n  },\n  \"meta\": null,\n  \"errors\": null\n}"
-            }
-          ]
+          }
         },
         {
           "name": "Change Password",
           "request": {
             "method": "PUT",
-            "url": { "raw": "{{base_url}}/profile/password" },
             "header": [
-              { "key": "Accept",          "value": "application/json" },
-              { "key": "Accept-Language", "value": "{{locale}}" },
-              { "key": "Authorization",   "value": "Bearer {{token}}" },
-              { "key": "Content-Type",    "value": "application/json" }
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
+            "url": {
+              "raw": "{{mobile_url}}/profile/password",
+              "host": [
+                "{{mobile_url}}"
+              ],
+              "path": [
+                "profile",
+                "password"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{mobile_token}}",
+                  "type": "string"
+                }
+              ]
+            },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"current_password\": \"password123\",\n  \"password\": \"newpassword456\",\n  \"password_confirmation\": \"newpassword456\"\n}"
+              "raw": "{\n  \"current_password\": \"password123\",\n  \"password\": \"newpassword123\",\n  \"password_confirmation\": \"newpassword123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
-          },
-          "response": [
-            {
-              "name": "200 OK — Password Changed",
-              "status": "OK",
-              "code": 200,
-              "body": "{\n  \"success\": true,\n  \"message\": \"تم تغيير كلمة المرور بنجاح.\",\n  \"data\": null,\n  \"meta\": null,\n  \"errors\": null\n}"
-            },
-            {
-              "name": "400 Bad Request — Wrong Current Password",
-              "status": "Bad Request",
-              "code": 400,
-              "body": "{\n  \"success\": false,\n  \"message\": \"كلمة المرور الحالية غير صحيحة.\",\n  \"data\": null,\n  \"meta\": null,\n  \"errors\": null\n}"
-            }
-          ]
+          }
         },
         {
           "name": "Update Preferences",
           "request": {
             "method": "PUT",
-            "url": { "raw": "{{base_url}}/profile/preferences" },
             "header": [
-              { "key": "Accept",          "value": "application/json" },
-              { "key": "Accept-Language", "value": "{{locale}}" },
-              { "key": "Authorization",   "value": "Bearer {{token}}" },
-              { "key": "Content-Type",    "value": "application/json" }
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
+            "url": {
+              "raw": "{{mobile_url}}/profile/preferences",
+              "host": [
+                "{{mobile_url}}"
+              ],
+              "path": [
+                "profile",
+                "preferences"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{mobile_token}}",
+                  "type": "string"
+                }
+              ]
+            },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"notification_enabled\": true,\n  \"theme\": \"dark\"\n}"
+              "raw": "{\n  \"notification_enabled\": true,\n  \"theme\": \"dark\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
-          },
-          "response": [
-            {
-              "name": "200 OK — Preferences Updated",
-              "status": "OK",
-              "code": 200,
-              "body": "{\n  \"success\": true,\n  \"message\": \"تم تحديث التفضيلات بنجاح.\",\n  \"data\": {\n    \"id\": 1,\n    \"name\": \"Ahmed Mohamed\",\n    \"email\": \"ahmed@example.com\",\n    \"phone\": \"01012345678\",\n    \"is_active\": true,\n    \"notification_enabled\": true,\n    \"theme\": \"dark\",\n    \"avatar_url\": null,\n    \"roles\": [\"user\"],\n    \"created_at\": \"2024-01-01T00:00:00.000000Z\"\n  },\n  \"meta\": null,\n  \"errors\": null\n}"
-            }
-          ]
+          }
         },
         {
           "name": "Delete Account",
           "request": {
             "method": "DELETE",
-            "url": { "raw": "{{base_url}}/profile" },
             "header": [
-              { "key": "Accept",          "value": "application/json" },
-              { "key": "Accept-Language", "value": "{{locale}}" },
-              { "key": "Authorization",   "value": "Bearer {{token}}" }
-            ]
-          },
-          "response": [
-            {
-              "name": "200 OK — Account Deleted",
-              "status": "OK",
-              "code": 200,
-              "body": "{\n  \"success\": true,\n  \"message\": \"تم حذف الحساب بنجاح.\",\n  \"data\": null,\n  \"meta\": null,\n  \"errors\": null\n}"
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              }
+            ],
+            "url": {
+              "raw": "{{mobile_url}}/profile",
+              "host": [
+                "{{mobile_url}}"
+              ],
+              "path": [
+                "profile"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{mobile_token}}",
+                  "type": "string"
+                }
+              ]
             }
-          ]
+          }
         }
       ]
     },
     {
-      "name": "🔍 Lookup",
+      "name": "🔍 Mobile Lookup",
       "item": [
         {
           "name": "Cities (Arabic — default)",
           "request": {
             "method": "GET",
-            "url": {
-              "raw": "{{base_url}}/lookup/cities?page=1&per_page=15",
-              "query": [
-                { "key": "page",     "value": "1" },
-                { "key": "per_page", "value": "15" }
-              ]
-            },
             "header": [
-              { "key": "Accept",          "value": "application/json" },
-              { "key": "Accept-Language", "value": "ar" }
-            ]
-          },
-          "response": [
-            {
-              "name": "200 OK — Cities (Arabic) — Paginated",
-              "status": "OK",
-              "code": 200,
-              "body": "{\n  \"success\": true,\n  \"message\": \"تم استرداد المدن بنجاح.\",\n  \"data\": [\n    { \"id\": 1, \"name\": \"القاهرة\" },\n    { \"id\": 2, \"name\": \"الإسكندرية\" },\n    { \"id\": 3, \"name\": \"الجيزة\" },\n    { \"id\": 4, \"name\": \"شرم الشيخ\" },\n    { \"id\": 5, \"name\": \"الأقصر\" },\n    { \"id\": 6, \"name\": \"أسوان\" },\n    { \"id\": 7, \"name\": \"الغردقة\" },\n    { \"id\": 8, \"name\": \"المنصورة\" },\n    { \"id\": 9, \"name\": \"طنطا\" },\n    { \"id\": 10, \"name\": \"الإسماعيلية\" }\n  ],\n  \"meta\": {\n    \"current_page\": 1,\n    \"per_page\": 15,\n    \"total\": 10,\n    \"last_page\": 1,\n    \"next_page_url\": null,\n    \"prev_page_url\": null\n  },\n  \"errors\": null\n}"
-            }
-          ]
-        },
-        {
-          "name": "Cities (English) — Localization Test",
-          "request": {
-            "method": "GET",
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              }
+            ],
             "url": {
-              "raw": "{{base_url}}/lookup/cities?page=1&per_page=15",
+              "raw": "{{mobile_url}}/lookup/cities?page=1&per_page=15",
+              "host": [
+                "{{mobile_url}}"
+              ],
+              "path": [
+                "lookup",
+                "cities"
+              ],
               "query": [
-                { "key": "page",     "value": "1" },
-                { "key": "per_page", "value": "15" }
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per_page",
+                  "value": "15"
+                }
               ]
-            },
-            "header": [
-              { "key": "Accept",          "value": "application/json" },
-              { "key": "Accept-Language", "value": "en" }
-            ]
-          },
-          "response": [
-            {
-              "name": "200 OK — Cities (English) — Same endpoint, different Accept-Language",
-              "status": "OK",
-              "code": 200,
-              "body": "{\n  \"success\": true,\n  \"message\": \"Cities retrieved successfully.\",\n  \"data\": [\n    { \"id\": 1, \"name\": \"Cairo\" },\n    { \"id\": 2, \"name\": \"Alexandria\" },\n    { \"id\": 3, \"name\": \"Giza\" },\n    { \"id\": 4, \"name\": \"Sharm El-Sheikh\" },\n    { \"id\": 5, \"name\": \"Luxor\" },\n    { \"id\": 6, \"name\": \"Aswan\" },\n    { \"id\": 7, \"name\": \"Hurghada\" },\n    { \"id\": 8, \"name\": \"Mansoura\" },\n    { \"id\": 9, \"name\": \"Tanta\" },\n    { \"id\": 10, \"name\": \"Ismailia\" }\n  ],\n  \"meta\": {\n    \"current_page\": 1,\n    \"per_page\": 15,\n    \"total\": 10,\n    \"last_page\": 1,\n    \"next_page_url\": null,\n    \"prev_page_url\": null\n  },\n  \"errors\": null\n}"
             }
-          ]
+          }
         },
         {
           "name": "Brands (Paginated)",
           "request": {
             "method": "GET",
-            "url": {
-              "raw": "{{base_url}}/lookup/brands?page=1&per_page=5",
-              "query": [
-                { "key": "page",     "value": "1" },
-                { "key": "per_page", "value": "5" }
-              ]
-            },
             "header": [
-              { "key": "Accept",          "value": "application/json" },
-              { "key": "Accept-Language", "value": "{{locale}}" }
-            ]
-          },
-          "response": [
-            {
-              "name": "200 OK — Brands Page 1 of 2",
-              "status": "OK",
-              "code": 200,
-              "body": "{\n  \"success\": true,\n  \"message\": \"تم استرداد الماركات بنجاح.\",\n  \"data\": [\n    { \"id\": 1, \"name\": \"تويوتا\",   \"logo\": null },\n    { \"id\": 2, \"name\": \"هيونداي\",  \"logo\": null },\n    { \"id\": 3, \"name\": \"كيا\",       \"logo\": null },\n    { \"id\": 4, \"name\": \"نيسان\",    \"logo\": null },\n    { \"id\": 5, \"name\": \"هوندا\",    \"logo\": null }\n  ],\n  \"meta\": {\n    \"current_page\": 1,\n    \"per_page\": 5,\n    \"total\": 10,\n    \"last_page\": 2,\n    \"next_page_url\": \"http://localhost:8000/api/v1/mobile/lookup/brands?page=2\",\n    \"prev_page_url\": null\n  },\n  \"errors\": null\n}"
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              }
+            ],
+            "url": {
+              "raw": "{{mobile_url}}/lookup/brands?page=1&per_page=5",
+              "host": [
+                "{{mobile_url}}"
+              ],
+              "path": [
+                "lookup",
+                "brands"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per_page",
+                  "value": "5"
+                }
+              ]
             }
-          ]
+          }
         },
         {
           "name": "Car Models by Brand",
           "request": {
             "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              }
+            ],
             "url": {
-              "raw": "{{base_url}}/lookup/brands/1/models?page=1&per_page=15",
+              "raw": "{{mobile_url}}/lookup/brands/1/models?page=1&per_page=15",
+              "host": [
+                "{{mobile_url}}"
+              ],
+              "path": [
+                "lookup",
+                "brands",
+                "1",
+                "models"
+              ],
               "query": [
-                { "key": "page",     "value": "1" },
-                { "key": "per_page", "value": "15" }
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per_page",
+                  "value": "15"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🛡️ Admin Auth",
+      "item": [
+        {
+          "name": "Admin Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{admin_url}}/auth/login",
+              "host": [
+                "{{admin_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
               ]
             },
-            "header": [
-              { "key": "Accept",          "value": "application/json" },
-              { "key": "Accept-Language", "value": "{{locale}}" }
-            ]
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@cars-marketplace.test\",\n  \"password\": \"admin12345\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
           },
-          "response": [
+          "event": [
             {
-              "name": "200 OK — Toyota Models (Arabic)",
-              "status": "OK",
-              "code": 200,
-              "body": "{\n  \"success\": true,\n  \"message\": \"تم استرداد موديلات السيارات بنجاح.\",\n  \"data\": [\n    { \"id\": 1, \"brand_id\": 1, \"name\": \"كامري\" },\n    { \"id\": 2, \"brand_id\": 1, \"name\": \"كورولا\" },\n    { \"id\": 3, \"brand_id\": 1, \"name\": \"يارس\" },\n    { \"id\": 4, \"brand_id\": 1, \"name\": \"راف فور\" },\n    { \"id\": 5, \"brand_id\": 1, \"name\": \"هايلكس\" }\n  ],\n  \"meta\": {\n    \"current_page\": 1,\n    \"per_page\": 15,\n    \"total\": 5,\n    \"last_page\": 1,\n    \"next_page_url\": null,\n    \"prev_page_url\": null\n  },\n  \"errors\": null\n}"
-            },
-            {
-              "name": "404 Not Found — Brand doesn't exist",
-              "status": "Not Found",
-              "code": 404,
-              "body": "{\n  \"success\": false,\n  \"message\": \"المورد غير موجود.\",\n  \"data\": null,\n  \"meta\": null,\n  \"errors\": null\n}"
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.success && json.data && json.data.token) {",
+                  "    pm.collectionVariables.set('admin_token', json.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
             }
           ]
+        },
+        {
+          "name": "Admin Me",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              }
+            ],
+            "url": {
+              "raw": "{{admin_url}}/auth/me",
+              "host": [
+                "{{admin_url}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Admin Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{admin_url}}/auth/logout",
+              "host": [
+                "{{admin_url}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "👥 Admin Users",
+      "item": [
+        {
+          "name": "List Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              }
+            ],
+            "url": {
+              "raw": "{{admin_url}}/users?page=1&per_page=15&search=&role=",
+              "host": [
+                "{{admin_url}}"
+              ],
+              "path": [
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per_page",
+                  "value": "15"
+                },
+                {
+                  "key": "search",
+                  "value": ""
+                },
+                {
+                  "key": "role",
+                  "value": ""
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Show User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              }
+            ],
+            "url": {
+              "raw": "{{admin_url}}/users/1",
+              "host": [
+                "{{admin_url}}"
+              ],
+              "path": [
+                "users",
+                "1"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Toggle User Active",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{admin_url}}/users/1/toggle-active",
+              "host": [
+                "{{admin_url}}"
+              ],
+              "path": [
+                "users",
+                "1",
+                "toggle-active"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update User Role",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{admin_url}}/users/1/role",
+              "host": [
+                "{{admin_url}}"
+              ],
+              "path": [
+                "users",
+                "1",
+                "role"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"showroom_owner\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              }
+            ],
+            "url": {
+              "raw": "{{admin_url}}/users/1",
+              "host": [
+                "{{admin_url}}"
+              ],
+              "path": [
+                "users",
+                "1"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏙️ Admin Cities",
+      "item": [
+        {
+          "name": "List Cities",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              }
+            ],
+            "url": {
+              "raw": "{{admin_url}}/cities?page=1&per_page=15",
+              "host": [
+                "{{admin_url}}"
+              ],
+              "path": [
+                "cities"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per_page",
+                  "value": "15"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create City",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{admin_url}}/cities",
+              "host": [
+                "{{admin_url}}"
+              ],
+              "path": [
+                "cities"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name_ar\": \"بورسعيد\",\n  \"name_en\": \"Port Said\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Update City",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{admin_url}}/cities/1",
+              "host": [
+                "{{admin_url}}"
+              ],
+              "path": [
+                "cities",
+                "1"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name_ar\": \"القاهرة\",\n  \"name_en\": \"Cairo\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Delete City",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              }
+            ],
+            "url": {
+              "raw": "{{admin_url}}/cities/1",
+              "host": [
+                "{{admin_url}}"
+              ],
+              "path": [
+                "cities",
+                "1"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🚗 Admin Brands",
+      "item": [
+        {
+          "name": "List Brands",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              }
+            ],
+            "url": {
+              "raw": "{{admin_url}}/brands?page=1&per_page=15",
+              "host": [
+                "{{admin_url}}"
+              ],
+              "path": [
+                "brands"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per_page",
+                  "value": "15"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Brand (with logo upload)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              }
+            ],
+            "url": {
+              "raw": "{{admin_url}}/brands",
+              "host": [
+                "{{admin_url}}"
+              ],
+              "path": [
+                "brands"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name_ar",
+                  "value": "فيراري",
+                  "type": "text"
+                },
+                {
+                  "key": "name_en",
+                  "value": "Ferrari",
+                  "type": "text"
+                },
+                {
+                  "key": "logo",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Brand",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              }
+            ],
+            "url": {
+              "raw": "{{admin_url}}/brands/1",
+              "host": [
+                "{{admin_url}}"
+              ],
+              "path": [
+                "brands",
+                "1"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name_ar",
+                  "value": "تويوتا",
+                  "type": "text"
+                },
+                {
+                  "key": "name_en",
+                  "value": "Toyota",
+                  "type": "text"
+                },
+                {
+                  "key": "logo",
+                  "type": "file",
+                  "src": ""
+                },
+                {
+                  "key": "_method",
+                  "value": "PUT",
+                  "type": "text"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Brand",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              }
+            ],
+            "url": {
+              "raw": "{{admin_url}}/brands/1",
+              "host": [
+                "{{admin_url}}"
+              ],
+              "path": [
+                "brands",
+                "1"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🚘 Admin Car Models",
+      "item": [
+        {
+          "name": "List Car Models (all)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              }
+            ],
+            "url": {
+              "raw": "{{admin_url}}/car-models?page=1&per_page=15",
+              "host": [
+                "{{admin_url}}"
+              ],
+              "path": [
+                "car-models"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per_page",
+                  "value": "15"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "List Car Models (filtered by brand)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              }
+            ],
+            "url": {
+              "raw": "{{admin_url}}/car-models?brand_id=1&page=1&per_page=15",
+              "host": [
+                "{{admin_url}}"
+              ],
+              "path": [
+                "car-models"
+              ],
+              "query": [
+                {
+                  "key": "brand_id",
+                  "value": "1"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per_page",
+                  "value": "15"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Car Model",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{admin_url}}/car-models",
+              "host": [
+                "{{admin_url}}"
+              ],
+              "path": [
+                "car-models"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"brand_id\": 1,\n  \"name_ar\": \"راف فور\",\n  \"name_en\": \"RAV4\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Update Car Model",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{admin_url}}/car-models/1",
+              "host": [
+                "{{admin_url}}"
+              ],
+              "path": [
+                "car-models",
+                "1"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"brand_id\": 1,\n  \"name_ar\": \"كامري\",\n  \"name_en\": \"Camry\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Delete Car Model",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              }
+            ],
+            "url": {
+              "raw": "{{admin_url}}/car-models/1",
+              "host": [
+                "{{admin_url}}"
+              ],
+              "path": [
+                "car-models",
+                "1"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
         }
       ]
     }

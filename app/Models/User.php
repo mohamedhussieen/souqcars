@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\ThemeMode;
 use App\Enums\UserRole;
+use App\Traits\HasOptimizedMedia;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -11,12 +12,13 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Permission\Traits\HasRoles;
 
 /** Represents a car marketplace user with authentication, media, and role capabilities. */
 class User extends Authenticatable implements HasMedia
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, HasRoles, InteractsWithMedia;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, HasRoles, InteractsWithMedia, HasOptimizedMedia;
 
     protected $fillable = [
         'name',
@@ -50,13 +52,19 @@ class User extends Authenticatable implements HasMedia
     /** Registers the avatar media collection allowing only a single file. */
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('avatar')->singleFile();
+        $this->registerOptimizedMediaCollection('avatar');
     }
 
-    /** Returns the user's avatar URL or null if none is set. */
+    /** Registers the optimized (size-reduced) conversion for the avatar. */
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this->registerOptimizedConversion();
+    }
+
+    /** Returns the user's optimized avatar URL, falling back to the original, or null if none is set. */
     public function getAvatarUrlAttribute(): ?string
     {
-        return $this->getFirstMediaUrl('avatar') ?: null;
+        return $this->getFirstMediaUrl('avatar', 'optimized') ?: $this->getFirstMediaUrl('avatar') ?: null;
     }
 
     /** Returns whether the user has accepted the application policy. */
