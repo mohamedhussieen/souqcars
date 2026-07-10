@@ -47,10 +47,21 @@ class ProfileService
         return $user->fresh();
     }
 
-    /** Soft-deletes the user account and revokes all their Sanctum tokens. */
+    /**
+     * Soft-deletes the user account and revokes all their Sanctum tokens.
+     * Frees up the email/phone for reuse by prefixing them before the soft delete,
+     * since the unique DB constraint still applies to soft-deleted rows.
+     */
     public function deleteAccount(User $user): void
     {
         $user->tokens()->delete();
+        $user->fcmTokens()->delete();
+
+        $user->update([
+            'email' => "deleted_{$user->id}_{$user->email}",
+            'phone' => "deleted_{$user->id}_{$user->phone}",
+        ]);
+
         $user->delete();
     }
 

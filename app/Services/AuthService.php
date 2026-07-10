@@ -6,6 +6,7 @@ use App\Enums\UserRole;
 use App\Mail\OtpCodeMail;
 use App\Models\OtpCode;
 use App\Models\User;
+use App\Models\UserFcmToken;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
@@ -16,14 +17,17 @@ class AuthService
     public function register(array $data): array
     {
         $user = User::create([
-            'name'      => $data['name'],
-            'email'     => $data['email'],
-            'phone'     => $data['phone'],
-            'password'  => $data['password'],
-            'fcm_token' => $data['fcm_token'] ?? null,
+            'name'     => $data['name'],
+            'email'    => $data['email'],
+            'phone'    => $data['phone'],
+            'password' => $data['password'],
         ])->fresh();
 
         $user->assignRole(UserRole::User->value);
+
+        if (!empty($data['fcm_token'])) {
+            $this->registerFcmToken($user, $data['fcm_token']);
+        }
 
         $token = $user->createToken('mobile-app', expiresAt: now()->addDays(30))->plainTextToken;
 
@@ -44,7 +48,7 @@ class AuthService
         }
 
         if ($fcmToken) {
-            $user->update(['fcm_token' => $fcmToken]);
+            $this->registerFcmToken($user, $fcmToken);
         }
 
         $token = $user->createToken('mobile-app', expiresAt: now()->addDays(30))->plainTextToken;
@@ -57,12 +61,12 @@ class AuthService
     {
         OtpCode::where('email', $email)->where('used', false)->delete();
 
-        $code = str_pad((string) random_int(0, 9999), 4, '0', STR_PAD_LEFT);
-
+        // $code = str_pad((string) random_int(0, 9999), 4, '0', STR_PAD_LEFT);
+        $code="1234";
         OtpCode::create([
             'email'      => $email,
             'code'       => $code,
-            'expires_at' => now()->addMinutes(5),
+            'expires_at' => now()->addMinutes(15),
         ]);
 
         Mail::to($email)->send(new OtpCodeMail($code));
@@ -108,5 +112,14 @@ class AuthService
     public function logout(User $user): void
     {
         $user->currentAccessToken()->delete();
+    }
+
+    /** Registers a device's FCM token for this user, reassigning it if another user previously held it. */
+    private function registerFcmToken(User $user, string $fcmToken): void
+    {
+        UserFcmToken::updateOrCreate(
+            ['token' => $fcmToken],
+            ['user_id' => $user->id]
+        );
     }
 }

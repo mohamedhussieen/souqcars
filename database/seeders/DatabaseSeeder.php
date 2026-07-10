@@ -7,7 +7,7 @@ use Illuminate\Database\Seeder;
 /** Root seeder that orchestrates all seeder execution order. */
 class DatabaseSeeder extends Seeder
 {
-    /** Runs all seeders in dependency order: roles → cities → brands → app config → admin user. */
+    /** Runs all seeders in dependency order: roles → cities → brands → app config → policy terms → admin user. */
     public function run(): void
     {
         $this->call([
@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             CitySeeder::class,
             BrandSeeder::class,
             AppConfigSeeder::class,
+            PolicyTermSeeder::class,
             AdminUserSeeder::class,
         ]);
     }

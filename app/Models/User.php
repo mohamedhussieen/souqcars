@@ -6,6 +6,7 @@ use App\Enums\ThemeMode;
 use App\Enums\UserRole;
 use App\Traits\HasOptimizedMedia;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -26,7 +27,6 @@ class User extends Authenticatable implements HasMedia
         'phone',
         'password',
         'is_active',
-        'fcm_token',
         'notification_enabled',
         'theme',
         'policy_accepted_at',
@@ -71,5 +71,11 @@ class User extends Authenticatable implements HasMedia
     public function hasAcceptedPolicy(): bool
     {
         return $this->policy_accepted_at !== null;
+    }
+
+    /** Returns all FCM push-notification tokens registered by this user's devices. */
+    public function fcmTokens(): HasMany
+    {
+        return $this->hasMany(UserFcmToken::class);
     }
 }

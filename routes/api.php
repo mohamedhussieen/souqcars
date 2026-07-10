@@ -21,6 +21,7 @@ use App\Http\Controllers\Api\Admin\Users\ShowUserController;
 use App\Http\Controllers\Api\Admin\Users\ToggleUserActiveController;
 use App\Http\Controllers\Api\Admin\Users\UpdateUserRoleController;
 use App\Http\Controllers\Api\Core\AppConfigController;
+use App\Http\Controllers\Api\Core\PolicyTermsController;
 use App\Http\Controllers\Api\Mobile\Auth\ForgotPasswordController;
 use App\Http\Controllers\Api\Mobile\Auth\LoginController;
 use App\Http\Controllers\Api\Mobile\Auth\LogoutController;
@@ -42,6 +43,11 @@ use Illuminate\Support\Facades\Route;
 // Core — public, app-level maintenance/upgrade config
 Route::prefix('core')->middleware('api')->group(function () {
     Route::get('app-config', AppConfigController::class);
+});
+
+// Core — public, locale-aware terms & conditions
+Route::prefix('core')->middleware(['api', \App\Http\Middleware\EnsureLocale::class])->group(function () {
+    Route::get('terms', PolicyTermsController::class);
 });
 
 // Admin dashboard — separate auth/guard scope from the mobile API
@@ -110,9 +116,14 @@ Route::prefix('v1/mobile')->middleware(['api', \App\Http\Middleware\EnsureLocale
     // Profile — policy acceptance (auth required, but not gated by the policy itself)
     Route::middleware('auth:sanctum')->post('profile/accept-policy', AcceptPolicyController::class);
 
+    // Profile — GET temporarily exempted from policy.accepted gate for testing
+    // TODO: re-add 'policy.accepted' to this route once ready
+    Route::prefix('profile')->middleware('auth:sanctum')->group(function () {
+        Route::get('/', ShowProfileController::class);
+    });
+
     // Profile — protected, requires policy acceptance
     Route::prefix('profile')->middleware(['auth:sanctum', 'policy.accepted'])->group(function () {
-        Route::get('/',           ShowProfileController::class);
         Route::put('/',           UpdateProfileController::class);
         Route::put('password',    ChangePasswordController::class);
         Route::put('preferences', UpdatePreferencesController::class);

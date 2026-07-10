@@ -42,6 +42,7 @@ return [
 
     'core' => [
         'app_config_fetched' => 'تم العرض بنجاح',
+        'terms_fetched'      => 'تم استرداد الشروط والأحكام بنجاح.',
     ],
 
     'admin' => [

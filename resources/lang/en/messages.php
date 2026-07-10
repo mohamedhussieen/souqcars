@@ -42,6 +42,7 @@ return [
 
     'core' => [
         'app_config_fetched' => 'App config retrieved successfully.',
+        'terms_fetched'      => 'Terms & conditions retrieved successfully.',
     ],
 
     'admin' => [

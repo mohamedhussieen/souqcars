@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 /** Validates incoming user registration data. */
 class RegisterRequest extends FormRequest
@@ -18,8 +19,8 @@ class RegisterRequest extends FormRequest
     {
         return [
             'name'                  => ['required', 'string', 'max:255'],
-            'phone'                 => ['required', 'string', 'unique:users,phone'],
-            'email'                 => ['required', 'email', 'unique:users,email'],
+            'phone'                 => ['required', 'string', Rule::unique('users', 'phone')->whereNull('deleted_at')],
+            'email'                 => ['required', 'email', Rule::unique('users', 'email')->whereNull('deleted_at')],
             'password'              => ['required', 'string', 'min:8', 'confirmed'],
             'password_confirmation' => ['required', 'string'],
             'fcm_token'             => ['sometimes', 'nullable', 'string'],
