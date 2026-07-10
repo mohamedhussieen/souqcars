@@ -22,6 +22,7 @@ return [
         'otp_mail_greeting'   => 'Your verification code is:',
         'otp_mail_expiry'     => 'This code will expire in 5 minutes.',
         'policy_not_accepted' => 'You must accept the application policy before continuing.',
+        'otp_throttled'       => 'Please wait :seconds seconds before requesting a new OTP.',
     ],
 
     'profile' => [

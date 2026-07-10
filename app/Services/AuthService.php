@@ -56,9 +56,26 @@ class AuthService
         return compact('user', 'token');
     }
 
-    /** Generates a 4-digit OTP, persists it with a 5-minute expiry, and emails it to the user. */
-    public function sendOtp(string $email): void
+    /** Minimum seconds a client must wait between two OTP sends for the same email. */
+    private const OTP_RESEND_COOLDOWN_SECONDS = 300;
+
+    /**
+     * Generates a 4-digit OTP, persists it with a 5-minute expiry, and emails it to the user.
+     * Throttled to one send per email per OTP_RESEND_COOLDOWN_SECONDS; returns the remaining
+     * cooldown in seconds if still throttled, or null once the OTP was sent successfully.
+     */
+    public function sendOtp(string $email): ?int
     {
+        $lastSentAt = OtpCode::where('email', $email)->latest()->value('created_at');
+
+        if ($lastSentAt) {
+            $secondsSinceLastSend = $lastSentAt->diffInSeconds(now());
+
+            if ($secondsSinceLastSend < self::OTP_RESEND_COOLDOWN_SECONDS) {
+                return self::OTP_RESEND_COOLDOWN_SECONDS - $secondsSinceLastSend;
+            }
+        }
+
         OtpCode::where('email', $email)->where('used', false)->delete();
 
         // $code = str_pad((string) random_int(0, 9999), 4, '0', STR_PAD_LEFT);
@@ -70,6 +87,8 @@ class AuthService
         ]);
 
         Mail::to($email)->send(new OtpCodeMail($code));
+
+        return null;
     }
 
     /** Verifies the OTP code for the given email address; returns true on success, false otherwise. */

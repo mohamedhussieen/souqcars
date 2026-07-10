@@ -11,10 +11,17 @@ class ForgotPasswordController extends BaseApiController
 {
     public function __construct(private readonly AuthService $authService) {}
 
-    /** Emails a 4-digit OTP to be used with the reset-password endpoint. */
+    /** Emails a 4-digit OTP to be used with the reset-password endpoint; throttled per email. */
     public function __invoke(ForgotPasswordRequest $request)
     {
-        $this->authService->sendOtp($request->input('email'));
+        $retryAfterSeconds = $this->authService->sendOtp($request->input('email'));
+
+        if ($retryAfterSeconds !== null) {
+            return $this->error(
+                __('messages.auth.otp_throttled', ['seconds' => $retryAfterSeconds]),
+                429
+            );
+        }
 
         return $this->success(null, __('messages.auth.otp_sent'));
     }
