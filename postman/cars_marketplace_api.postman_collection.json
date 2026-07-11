@@ -37,6 +37,11 @@
       "type": "string"
     },
     {
+      "key": "reset_token",
+      "value": "",
+      "type": "string"
+    },
+    {
       "key": "locale",
       "value": "ar",
       "type": "string"
@@ -327,6 +332,59 @@
           }
         },
         {
+          "name": "Verify Reset OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{mobile_url}}/auth/verify-reset-otp",
+              "host": [
+                "{{mobile_url}}"
+              ],
+              "path": [
+                "auth",
+                "verify-reset-otp"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"ahmed@example.com\",\n  \"otp\": \"1234\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.success && json.data && json.data.reset_token) {",
+                  "    pm.collectionVariables.set('reset_token', json.data.reset_token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
           "name": "Reset Password",
           "request": {
             "method": "POST",
@@ -356,7 +414,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"ahmed@example.com\",\n  \"otp_code\": \"1234\",\n  \"password\": \"newpassword123\",\n  \"password_confirmation\": \"newpassword123\"\n}",
+              "raw": "{\n  \"email\": \"ahmed@example.com\",\n  \"reset_token\": \"{{reset_token}}\",\n  \"password\": \"NewPassword123\",\n  \"password_confirmation\": \"NewPassword123\"\n}",
               "options": {
                 "raw": {
                   "language": "json"

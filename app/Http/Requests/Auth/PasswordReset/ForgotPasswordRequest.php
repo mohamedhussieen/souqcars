@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests\Auth\PasswordReset;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-/** Validates the email before sending a password reset link. */
+/** Validates the email before sending a password-reset OTP. */
 class ForgotPasswordRequest extends FormRequest
 {
     /** Forgot password is a public endpoint. */
@@ -13,11 +13,14 @@ class ForgotPasswordRequest extends FormRequest
         return true;
     }
 
-    /** Requires a valid email address that exists in the users table. */
+    /**
+     * Requires a well-formed email address. Existence is checked in the service layer
+     * (not here) so the response is identical whether the email is registered or not.
+     */
     public function rules(): array
     {
         return [
-            'email' => ['required', 'email', 'exists:users,email'],
+            'email' => ['required', 'email'],
         ];
     }
 

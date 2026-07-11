@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests\Auth\PasswordReset;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Password;
 
-/** Validates the email, OTP code, new password, and confirmation before resetting. */
+/** Validates the email, reset token, and new password before completing the reset. */
 class ResetPasswordRequest extends FormRequest
 {
     /** Password reset is a public endpoint. */
@@ -13,13 +14,13 @@ class ResetPasswordRequest extends FormRequest
         return true;
     }
 
-    /** Requires email, a 4-digit OTP code, and a confirmed password of at least 8 characters. */
+    /** Requires email, the reset token issued by verify-otp, and a strong confirmed password. */
     public function rules(): array
     {
         return [
             'email'                 => ['required', 'email'],
-            'otp_code'              => ['required', 'string', 'digits:4'],
-            'password'              => ['required', 'string', 'min:8', 'confirmed'],
+            'reset_token'           => ['required', 'string'],
+            'password'              => ['required', 'string', 'confirmed', Password::defaults()],
             'password_confirmation' => ['required', 'string'],
         ];
     }

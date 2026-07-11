@@ -22,13 +22,14 @@ use App\Http\Controllers\Api\Admin\Users\ToggleUserActiveController;
 use App\Http\Controllers\Api\Admin\Users\UpdateUserRoleController;
 use App\Http\Controllers\Api\Core\AppConfigController;
 use App\Http\Controllers\Api\Core\PolicyTermsController;
-use App\Http\Controllers\Api\Mobile\Auth\ForgotPasswordController;
 use App\Http\Controllers\Api\Mobile\Auth\LoginController;
 use App\Http\Controllers\Api\Mobile\Auth\LogoutController;
 use App\Http\Controllers\Api\Mobile\Auth\OtpSendController;
 use App\Http\Controllers\Api\Mobile\Auth\OtpVerifyController;
+use App\Http\Controllers\Api\Mobile\Auth\PasswordReset\ForgotPasswordController;
+use App\Http\Controllers\Api\Mobile\Auth\PasswordReset\ResetPasswordController;
+use App\Http\Controllers\Api\Mobile\Auth\PasswordReset\VerifyResetOtpController;
 use App\Http\Controllers\Api\Mobile\Auth\RegisterController;
-use App\Http\Controllers\Api\Mobile\Auth\ResetPasswordController;
 use App\Http\Controllers\Api\Mobile\Lookup\BrandModelsController;
 use App\Http\Controllers\Api\Mobile\Lookup\BrandsController;
 use App\Http\Controllers\Api\Mobile\Lookup\CitiesController;
@@ -104,8 +105,13 @@ Route::prefix('v1/mobile')->middleware(['api', \App\Http\Middleware\EnsureLocale
         Route::post('login',            LoginController::class);
         Route::post('otp/send',         OtpSendController::class);
         Route::post('otp/verify',       OtpVerifyController::class);
-        Route::post('forgot-password',  ForgotPasswordController::class);
-        Route::post('reset-password',   ResetPasswordController::class);
+
+        // Forgot-password flow — separate endpoints (send OTP, verify OTP, reset), throttled to curb OTP brute-forcing
+        Route::middleware('throttle:6,1')->group(function () {
+            Route::post('forgot-password', ForgotPasswordController::class);
+            Route::post('verify-reset-otp', VerifyResetOtpController::class);
+        });
+        Route::post('reset-password', ResetPasswordController::class);
 
         // Auth — protected
         Route::middleware('auth:sanctum')->group(function () {

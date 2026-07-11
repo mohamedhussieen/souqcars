@@ -2,10 +2,12 @@
 
 namespace App\Exceptions;
 
+use App\Exceptions\PasswordResetException;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Validation\ValidationException;
 use Throwable;
 
@@ -35,6 +37,14 @@ class Handler extends ExceptionHandler
     {
         if ($e instanceof ValidationException) {
             return $this->validationError($e->errors());
+        }
+
+        if ($e instanceof PasswordResetException) {
+            return $this->error(__($e->translationKey()), $e->status());
+        }
+
+        if ($e instanceof ThrottleRequestsException) {
+            return $this->error(__('messages.throttled'), 429);
         }
 
         if ($e instanceof ModelNotFoundException) {

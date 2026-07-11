@@ -108,25 +108,6 @@ class AuthService
         return true;
     }
 
-    /** Verifies the OTP code and, if valid, updates the user's password. */
-    public function resetPassword(string $email, string $code, string $password): bool
-    {
-        if (!$this->verifyOtp($email, $code)) {
-            return false;
-        }
-
-        $user = User::where('email', $email)->first();
-
-        if (!$user) {
-            return false;
-        }
-
-        $user->update(['password' => $password]);
-        $user->tokens()->delete();
-
-        return true;
-    }
-
     /** Revokes only the current Sanctum token used for this request. */
     public function logout(User $user): void
     {
