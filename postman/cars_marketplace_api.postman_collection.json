@@ -84,6 +84,31 @@
               ]
             }
           }
+        },
+        {
+          "name": "Terms & Conditions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{locale}}"
+              }
+            ],
+            "url": {
+              "raw": "{{core_url}}/terms",
+              "host": [
+                "{{core_url}}"
+              ],
+              "path": [
+                "terms"
+              ]
+            }
+          }
         }
       ]
     },
