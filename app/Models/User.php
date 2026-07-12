@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\ThemeMode;
 use App\Enums\UserRole;
 use App\Traits\HasOptimizedMedia;
+use App\Traits\SendsFirebaseNotifications;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -19,7 +20,7 @@ use Spatie\Permission\Traits\HasRoles;
 /** Represents a car marketplace user with authentication, media, and role capabilities. */
 class User extends Authenticatable implements HasMedia
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, HasRoles, InteractsWithMedia, HasOptimizedMedia;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, HasRoles, InteractsWithMedia, HasOptimizedMedia, SendsFirebaseNotifications;
 
     protected $fillable = [
         'name',
@@ -77,5 +78,17 @@ class User extends Authenticatable implements HasMedia
     public function fcmTokens(): HasMany
     {
         return $this->hasMany(UserFcmToken::class);
+    }
+
+    /** Returns all cars this user has favorited. */
+    public function favorites(): HasMany
+    {
+        return $this->hasMany(Favorite::class);
+    }
+
+    /** Returns all car ratings submitted by this user. */
+    public function carRatings(): HasMany
+    {
+        return $this->hasMany(CarRating::class);
     }
 }

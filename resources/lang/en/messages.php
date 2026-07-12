@@ -45,6 +45,34 @@ return [
         'cities_fetched'  => 'Cities retrieved successfully.',
         'brands_fetched'  => 'Brands retrieved successfully.',
         'models_fetched'  => 'Car models retrieved successfully.',
+        'colors_fetched'  => 'Colors retrieved successfully.',
+    ],
+
+    'home' => [
+        'fetched' => 'Home data retrieved successfully.',
+    ],
+
+    'cars' => [
+        'fetched'              => 'Cars retrieved successfully.',
+        'detail_fetched'       => 'Car details retrieved successfully.',
+        'my_listings_fetched'  => 'Your listings retrieved successfully.',
+        'image_limit_exceeded' => 'A car may have at most 10 images.',
+    ],
+
+    'favorites' => [
+        'fetched' => 'Favorites retrieved successfully.',
+        'added'   => 'Car added to favorites.',
+        'removed' => 'Car removed from favorites.',
+    ],
+
+    'ratings' => [
+        'fetched' => 'Ratings retrieved successfully.',
+        'saved'   => 'Rating saved successfully.',
+    ],
+
+    'showrooms' => [
+        'fetched'        => 'Showrooms retrieved successfully.',
+        'detail_fetched' => 'Showroom retrieved successfully.',
     ],
 
     'core' => [
@@ -74,5 +102,31 @@ return [
         'car_model_created'  => 'Car model created successfully.',
         'car_model_updated'  => 'Car model updated successfully.',
         'car_model_deleted'  => 'Car model deleted successfully.',
+
+        'cars_fetched'        => 'Cars retrieved successfully.',
+        'car_fetched'         => 'Car retrieved successfully.',
+        'car_created'         => 'Car created successfully.',
+        'car_updated'         => 'Car updated successfully.',
+        'car_deleted'         => 'Car deleted successfully.',
+        'car_images_uploaded' => 'Car images uploaded successfully.',
+        'car_image_deleted'   => 'Car image deleted successfully.',
+        'inspection_uploaded' => 'Inspection report uploaded successfully.',
+        'car_marked_sold'     => 'Car marked as sold successfully.',
+        'car_status_updated'  => 'Car status updated successfully.',
+
+        'showroom_fetched'       => 'Showroom retrieved successfully.',
+        'showroom_updated'       => 'Showroom updated successfully.',
+        'showroom_logo_uploaded' => 'Showroom logo uploaded successfully.',
+
+        'ads_fetched' => 'Ads retrieved successfully.',
+        'ad_created'  => 'Ad created successfully.',
+        'ad_updated'  => 'Ad updated successfully.',
+        'ad_deleted'  => 'Ad deleted successfully.',
+
+        'colors_fetched' => 'Colors retrieved successfully.',
+        'color_created'  => 'Color created successfully.',
+        'color_updated'  => 'Color updated successfully.',
+        'color_deleted'  => 'Color deleted successfully.',
+        'color_in_use'   => 'This color is in use by one or more cars and cannot be deleted.',
     ],
 ];

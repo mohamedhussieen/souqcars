@@ -1824,6 +1824,1781 @@
           }
         }
       ]
+    },
+    {
+      "name": "🚗 Sprint 2 — Cars, Showrooms & Discovery",
+      "item": [
+        {
+          "name": "Home & Discovery",
+          "item": [
+            {
+              "name": "Home Feed",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{mobile_url}}/home",
+                  "host": [
+                    "{{mobile_url}}"
+                  ],
+                  "path": [
+                    "home"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "List Cars (no filters)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{mobile_url}}/cars?page=1&per_page=15",
+                  "host": [
+                    "{{mobile_url}}"
+                  ],
+                  "path": [
+                    "cars"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "per_page",
+                      "value": "15"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "List Cars (single filter: brand)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{mobile_url}}/cars?brand_id=1",
+                  "host": [
+                    "{{mobile_url}}"
+                  ],
+                  "path": [
+                    "cars"
+                  ],
+                  "query": [
+                    {
+                      "key": "brand_id",
+                      "value": "1"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "List Cars (multi-filter: brand+city+price+condition)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{mobile_url}}/cars?brand_id=1&city_id=1&price_min=100000&price_max=800000&condition=used&transmission=automatic",
+                  "host": [
+                    "{{mobile_url}}"
+                  ],
+                  "path": [
+                    "cars"
+                  ],
+                  "query": [
+                    {
+                      "key": "brand_id",
+                      "value": "1"
+                    },
+                    {
+                      "key": "city_id",
+                      "value": "1"
+                    },
+                    {
+                      "key": "price_min",
+                      "value": "100000"
+                    },
+                    {
+                      "key": "price_max",
+                      "value": "800000"
+                    },
+                    {
+                      "key": "condition",
+                      "value": "used"
+                    },
+                    {
+                      "key": "transmission",
+                      "value": "automatic"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "List Cars (sort: price ascending)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{mobile_url}}/cars?sort_by=price_asc",
+                  "host": [
+                    "{{mobile_url}}"
+                  ],
+                  "path": [
+                    "cars"
+                  ],
+                  "query": [
+                    {
+                      "key": "sort_by",
+                      "value": "price_asc"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "List Cars (sort: newest, default)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{mobile_url}}/cars?sort_by=newest",
+                  "host": [
+                    "{{mobile_url}}"
+                  ],
+                  "path": [
+                    "cars"
+                  ],
+                  "query": [
+                    {
+                      "key": "sort_by",
+                      "value": "newest"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Search Cars",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{mobile_url}}/search?search=Toyota Camry",
+                  "host": [
+                    "{{mobile_url}}"
+                  ],
+                  "path": [
+                    "search"
+                  ],
+                  "query": [
+                    {
+                      "key": "search",
+                      "value": "Toyota Camry"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Car Detail (Arabic)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "ar"
+                  }
+                ],
+                "url": {
+                  "raw": "{{mobile_url}}/cars/1",
+                  "host": [
+                    "{{mobile_url}}"
+                  ],
+                  "path": [
+                    "cars",
+                    "1"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Car Detail (English)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "en"
+                  }
+                ],
+                "url": {
+                  "raw": "{{mobile_url}}/cars/1",
+                  "host": [
+                    "{{mobile_url}}"
+                  ],
+                  "path": [
+                    "cars",
+                    "1"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Favorites",
+          "item": [
+            {
+              "name": "List My Favorites",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{mobile_url}}/favorites?page=1&per_page=15",
+                  "host": [
+                    "{{mobile_url}}"
+                  ],
+                  "path": [
+                    "favorites"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "per_page",
+                      "value": "15"
+                    }
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{mobile_token}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Toggle Favorite",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{mobile_url}}/favorites/1",
+                  "host": [
+                    "{{mobile_url}}"
+                  ],
+                  "path": [
+                    "favorites",
+                    "1"
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{mobile_token}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Ratings",
+          "item": [
+            {
+              "name": "List Car Ratings",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{mobile_url}}/cars/1/ratings?page=1&per_page=15",
+                  "host": [
+                    "{{mobile_url}}"
+                  ],
+                  "path": [
+                    "cars",
+                    "1",
+                    "ratings"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "per_page",
+                      "value": "15"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Submit/Update Car Rating",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{mobile_url}}/cars/1/ratings",
+                  "host": [
+                    "{{mobile_url}}"
+                  ],
+                  "path": [
+                    "cars",
+                    "1",
+                    "ratings"
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{mobile_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"rating\": 5,\n  \"comment\": \"سيارة ممتازة وحالتها كويسة جدا\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Showrooms",
+          "item": [
+            {
+              "name": "List Showrooms",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{mobile_url}}/showrooms?page=1&per_page=15",
+                  "host": [
+                    "{{mobile_url}}"
+                  ],
+                  "path": [
+                    "showrooms"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "per_page",
+                      "value": "15"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Show Showroom",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{mobile_url}}/showrooms/1",
+                  "host": [
+                    "{{mobile_url}}"
+                  ],
+                  "path": [
+                    "showrooms",
+                    "1"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Showroom Cars",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{mobile_url}}/showrooms/1/cars?page=1&per_page=15",
+                  "host": [
+                    "{{mobile_url}}"
+                  ],
+                  "path": [
+                    "showrooms",
+                    "1",
+                    "cars"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "per_page",
+                      "value": "15"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "My Listings",
+          "item": [
+            {
+              "name": "My Listings",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{mobile_url}}/my-listings?page=1&per_page=15",
+                  "host": [
+                    "{{mobile_url}}"
+                  ],
+                  "path": [
+                    "my-listings"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "per_page",
+                      "value": "15"
+                    }
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{mobile_token}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Lookup — Colors",
+          "item": [
+            {
+              "name": "List Colors",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{mobile_url}}/lookup/colors?page=1&per_page=15",
+                  "host": [
+                    "{{mobile_url}}"
+                  ],
+                  "path": [
+                    "lookup",
+                    "colors"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "per_page",
+                      "value": "15"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Admin — Cars",
+          "item": [
+            {
+              "name": "List Cars (admin, all statuses)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{admin_url}}/cars?page=1&per_page=15",
+                  "host": [
+                    "{{admin_url}}"
+                  ],
+                  "path": [
+                    "cars"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "per_page",
+                      "value": "15"
+                    }
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "List Cars (filter: pending review)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{admin_url}}/cars?status=pending",
+                  "host": [
+                    "{{admin_url}}"
+                  ],
+                  "path": [
+                    "cars"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "pending"
+                    }
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "List Cars (filter: seller_type + search)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{admin_url}}/cars?seller_type=admin&search=Camry",
+                  "host": [
+                    "{{admin_url}}"
+                  ],
+                  "path": [
+                    "cars"
+                  ],
+                  "query": [
+                    {
+                      "key": "seller_type",
+                      "value": "admin"
+                    },
+                    {
+                      "key": "search",
+                      "value": "Camry"
+                    }
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Create Car",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{admin_url}}/cars",
+                  "host": [
+                    "{{admin_url}}"
+                  ],
+                  "path": [
+                    "cars"
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"brand_id\": 1,\n  \"car_model_id\": 1,\n  \"city_id\": 1,\n  \"color_id\": 1,\n  \"year\": 2022,\n  \"title_ar\": \"تويوتا كامري 2022 فبريكا\",\n  \"title_en\": \"Toyota Camry 2022\",\n  \"description_ar\": \"سيارة بحالة ممتازة، فبريكا بالكامل\",\n  \"description_en\": \"Excellent condition, all original\",\n  \"price\": 950000,\n  \"payment_type\": \"both\",\n  \"mileage\": 25000,\n  \"condition\": \"used\",\n  \"transmission\": \"automatic\",\n  \"fuel_type\": \"petrol\",\n  \"body_type\": \"sedan\",\n  \"owners_count\": 1\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Show Car (admin)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{admin_url}}/cars/1",
+                  "host": [
+                    "{{admin_url}}"
+                  ],
+                  "path": [
+                    "cars",
+                    "1"
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Update Car",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{admin_url}}/cars/1",
+                  "host": [
+                    "{{admin_url}}"
+                  ],
+                  "path": [
+                    "cars",
+                    "1"
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"price\": 900000,\n  \"mileage\": 27000\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Delete Car (soft delete)",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{admin_url}}/cars/1",
+                  "host": [
+                    "{{admin_url}}"
+                  ],
+                  "path": [
+                    "cars",
+                    "1"
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Upload Car Images (multipart)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{admin_url}}/cars/1/images",
+                  "host": [
+                    "{{admin_url}}"
+                  ],
+                  "path": [
+                    "cars",
+                    "1",
+                    "images"
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "images[]",
+                      "type": "file",
+                      "src": []
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Delete Car Image",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{admin_url}}/cars/1/images/1",
+                  "host": [
+                    "{{admin_url}}"
+                  ],
+                  "path": [
+                    "cars",
+                    "1",
+                    "images",
+                    "1"
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Upload Inspection Report (multipart)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{admin_url}}/cars/1/inspection",
+                  "host": [
+                    "{{admin_url}}"
+                  ],
+                  "path": [
+                    "cars",
+                    "1",
+                    "inspection"
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "file",
+                      "type": "file",
+                      "src": ""
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Mark Car as Sold",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{admin_url}}/cars/1/sold",
+                  "host": [
+                    "{{admin_url}}"
+                  ],
+                  "path": [
+                    "cars",
+                    "1",
+                    "sold"
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Approve Car (set status active)",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{admin_url}}/cars/1/status",
+                  "host": [
+                    "{{admin_url}}"
+                  ],
+                  "path": [
+                    "cars",
+                    "1",
+                    "status"
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"active\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Reject Car (with reason)",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{admin_url}}/cars/1/status",
+                  "host": [
+                    "{{admin_url}}"
+                  ],
+                  "path": [
+                    "cars",
+                    "1",
+                    "status"
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"rejected\",\n  \"rejection_reason\": \"الصور غير واضحة، يرجى إعادة الرفع\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Admin — Showroom",
+          "item": [
+            {
+              "name": "Get Showroom Profile",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{admin_url}}/showroom",
+                  "host": [
+                    "{{admin_url}}"
+                  ],
+                  "path": [
+                    "showroom"
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Update Showroom Profile",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{admin_url}}/showroom",
+                  "host": [
+                    "{{admin_url}}"
+                  ],
+                  "path": [
+                    "showroom"
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name_ar\": \"معرض رابطة السيارات\",\n  \"name_en\": \"Rabta Cars Showroom\",\n  \"phone\": \"01000000000\",\n  \"whatsapp\": \"01000000000\",\n  \"email\": \"showroom@rabtetsouqelsayarat.com\",\n  \"address_ar\": \"القاهرة الجديدة، التجمع الخامس\",\n  \"address_en\": \"New Cairo, Fifth Settlement\",\n  \"lat\": 30.0131,\n  \"lng\": 31.4426\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Upload Showroom Logo (multipart)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{admin_url}}/showroom/logo",
+                  "host": [
+                    "{{admin_url}}"
+                  ],
+                  "path": [
+                    "showroom",
+                    "logo"
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "logo",
+                      "type": "file",
+                      "src": ""
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Admin — Ads",
+          "item": [
+            {
+              "name": "List Ads",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{admin_url}}/ads?page=1&per_page=15",
+                  "host": [
+                    "{{admin_url}}"
+                  ],
+                  "path": [
+                    "ads"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "per_page",
+                      "value": "15"
+                    }
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Create Ad (multipart with image)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{admin_url}}/ads",
+                  "host": [
+                    "{{admin_url}}"
+                  ],
+                  "path": [
+                    "ads"
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "title_ar",
+                      "value": "عروض الصيف",
+                      "type": "text"
+                    },
+                    {
+                      "key": "title_en",
+                      "value": "Summer Offers",
+                      "type": "text"
+                    },
+                    {
+                      "key": "type",
+                      "value": "banner",
+                      "type": "text"
+                    },
+                    {
+                      "key": "action_type",
+                      "value": "car",
+                      "type": "text"
+                    },
+                    {
+                      "key": "action_value",
+                      "value": "1",
+                      "type": "text"
+                    },
+                    {
+                      "key": "is_active",
+                      "value": "true",
+                      "type": "text"
+                    },
+                    {
+                      "key": "sort_order",
+                      "value": "1",
+                      "type": "text"
+                    },
+                    {
+                      "key": "image",
+                      "type": "file",
+                      "src": ""
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Update Ad",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{admin_url}}/ads/1",
+                  "host": [
+                    "{{admin_url}}"
+                  ],
+                  "path": [
+                    "ads",
+                    "1"
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"is_active\": false,\n  \"sort_order\": 2\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Delete Ad",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{admin_url}}/ads/1",
+                  "host": [
+                    "{{admin_url}}"
+                  ],
+                  "path": [
+                    "ads",
+                    "1"
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Admin — Colors",
+          "item": [
+            {
+              "name": "List Colors (admin)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{admin_url}}/colors?page=1&per_page=15",
+                  "host": [
+                    "{{admin_url}}"
+                  ],
+                  "path": [
+                    "colors"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "per_page",
+                      "value": "15"
+                    }
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Create Color",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{admin_url}}/colors",
+                  "host": [
+                    "{{admin_url}}"
+                  ],
+                  "path": [
+                    "colors"
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name_ar\": \"بنفسجي\",\n  \"name_en\": \"Purple\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Update Color",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{admin_url}}/colors/1",
+                  "host": [
+                    "{{admin_url}}"
+                  ],
+                  "path": [
+                    "colors",
+                    "1"
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name_en\": \"Pearl White\",\n  \"is_active\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Delete Color (fails if in use)",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{locale}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{admin_url}}/colors/16",
+                  "host": [
+                    "{{admin_url}}"
+                  ],
+                  "path": [
+                    "colors",
+                    "16"
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
     }
   ]
 }

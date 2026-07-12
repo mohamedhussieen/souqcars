@@ -1,4 +1,5 @@
 /.phpunit.cache
+/.phpunit.result.cache
 /node_modules
 /public/build
 /public/hot
@@ -26,6 +27,8 @@ yarn-error.log
 # App-specific runtime data (not source)
 /storage/app/public/*
 !/storage/app/public/.gitkeep
+/storage/app/firebase/*
+!/storage/app/firebase/.gitkeep
 /storage/framework/cache/data/*
 /storage/framework/sessions/*
 /storage/framework/testing/*

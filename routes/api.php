@@ -1,8 +1,29 @@
 <?php
 
+use App\Http\Controllers\Api\Admin\Ads\DeleteAdController;
+use App\Http\Controllers\Api\Admin\Ads\ListAdsController;
+use App\Http\Controllers\Api\Admin\Ads\StoreAdController;
+use App\Http\Controllers\Api\Admin\Ads\UpdateAdController;
 use App\Http\Controllers\Api\Admin\Auth\AdminLoginController;
 use App\Http\Controllers\Api\Admin\Auth\AdminLogoutController;
 use App\Http\Controllers\Api\Admin\Auth\AdminMeController;
+use App\Http\Controllers\Api\Admin\Cars\DeleteCarController as AdminDeleteCarController;
+use App\Http\Controllers\Api\Admin\Cars\DeleteCarImageController;
+use App\Http\Controllers\Api\Admin\Cars\ListCarsController as AdminListCarsController;
+use App\Http\Controllers\Api\Admin\Cars\MarkCarSoldController;
+use App\Http\Controllers\Api\Admin\Cars\ShowCarController as AdminShowCarController;
+use App\Http\Controllers\Api\Admin\Cars\StoreCarController;
+use App\Http\Controllers\Api\Admin\Cars\UpdateCarController;
+use App\Http\Controllers\Api\Admin\Cars\UpdateCarStatusController;
+use App\Http\Controllers\Api\Admin\Cars\UploadCarImagesController;
+use App\Http\Controllers\Api\Admin\Cars\UploadInspectionController;
+use App\Http\Controllers\Api\Admin\Colors\DeleteColorController;
+use App\Http\Controllers\Api\Admin\Colors\ListColorsController;
+use App\Http\Controllers\Api\Admin\Colors\StoreColorController;
+use App\Http\Controllers\Api\Admin\Colors\UpdateColorController;
+use App\Http\Controllers\Api\Admin\Showroom\ShowShowroomController as AdminShowShowroomController;
+use App\Http\Controllers\Api\Admin\Showroom\UpdateShowroomController;
+use App\Http\Controllers\Api\Admin\Showroom\UploadShowroomLogoController;
 use App\Http\Controllers\Api\Admin\Brands\DeleteBrandController;
 use App\Http\Controllers\Api\Admin\Brands\ListBrandsController;
 use App\Http\Controllers\Api\Admin\Brands\StoreBrandController;
@@ -30,9 +51,22 @@ use App\Http\Controllers\Api\Mobile\Auth\PasswordReset\ForgotPasswordController;
 use App\Http\Controllers\Api\Mobile\Auth\PasswordReset\ResetPasswordController;
 use App\Http\Controllers\Api\Mobile\Auth\PasswordReset\VerifyResetOtpController;
 use App\Http\Controllers\Api\Mobile\Auth\RegisterController;
+use App\Http\Controllers\Api\Mobile\Cars\ListCarsController;
+use App\Http\Controllers\Api\Mobile\Cars\SearchCarsController;
+use App\Http\Controllers\Api\Mobile\Cars\ShowCarController;
+use App\Http\Controllers\Api\Mobile\Favorites\ListFavoritesController;
+use App\Http\Controllers\Api\Mobile\Favorites\ToggleFavoriteController;
+use App\Http\Controllers\Api\Mobile\Home\HomeController;
 use App\Http\Controllers\Api\Mobile\Lookup\BrandModelsController;
 use App\Http\Controllers\Api\Mobile\Lookup\BrandsController;
 use App\Http\Controllers\Api\Mobile\Lookup\CitiesController;
+use App\Http\Controllers\Api\Mobile\Lookup\ColorsController;
+use App\Http\Controllers\Api\Mobile\MyListings\MyListingsController;
+use App\Http\Controllers\Api\Mobile\Ratings\ListCarRatingsController;
+use App\Http\Controllers\Api\Mobile\Ratings\StoreCarRatingController;
+use App\Http\Controllers\Api\Mobile\Showrooms\ListShowroomsController;
+use App\Http\Controllers\Api\Mobile\Showrooms\ShowroomCarsController;
+use App\Http\Controllers\Api\Mobile\Showrooms\ShowShowroomController;
 use App\Http\Controllers\Api\Mobile\Profile\AcceptPolicyController;
 use App\Http\Controllers\Api\Mobile\Profile\ChangePasswordController;
 use App\Http\Controllers\Api\Mobile\Profile\DeleteAccountController;
@@ -95,9 +129,46 @@ Route::prefix('admin')->middleware('api')->group(function () {
         Route::put('{carModel}',   UpdateCarModelController::class);
         Route::delete('{carModel}', DeleteCarModelController::class);
     });
+
+    // Cars CRUD + media + status workflow — protected, requires the admin role
+    Route::prefix('cars')->middleware(['auth:sanctum', 'admin'])->group(function () {
+        Route::get('/',                      AdminListCarsController::class);
+        Route::post('/',                     StoreCarController::class);
+        Route::get('{car}',                  AdminShowCarController::class);
+        Route::put('{car}',                  UpdateCarController::class);
+        Route::delete('{car}',               AdminDeleteCarController::class);
+        Route::post('{car}/images',          UploadCarImagesController::class);
+        Route::delete('{car}/images/{mediaId}', DeleteCarImageController::class);
+        Route::post('{car}/inspection',      UploadInspectionController::class);
+        Route::post('{car}/sold',            MarkCarSoldController::class);
+        Route::put('{car}/status',           UpdateCarStatusController::class);
+    });
+
+    // Showroom profile (single row in Phase 1) — protected, requires the admin role
+    Route::prefix('showroom')->middleware(['auth:sanctum', 'admin'])->group(function () {
+        Route::get('/',      AdminShowShowroomController::class);
+        Route::put('/',      UpdateShowroomController::class);
+        Route::post('logo',  UploadShowroomLogoController::class);
+    });
+
+    // Ads CRUD — protected, requires the admin role
+    Route::prefix('ads')->middleware(['auth:sanctum', 'admin'])->group(function () {
+        Route::get('/',      ListAdsController::class);
+        Route::post('/',     StoreAdController::class);
+        Route::put('{ad}',   UpdateAdController::class);
+        Route::delete('{ad}', DeleteAdController::class);
+    });
+
+    // Colors CRUD — protected, requires the admin role
+    Route::prefix('colors')->middleware(['auth:sanctum', 'admin'])->group(function () {
+        Route::get('/',        ListColorsController::class);
+        Route::post('/',       StoreColorController::class);
+        Route::put('{color}',  UpdateColorController::class);
+        Route::delete('{color}', DeleteColorController::class);
+    });
 });
 
-Route::prefix('v1/mobile')->middleware(['api', \App\Http\Middleware\EnsureLocale::class])->group(function () {
+Route::prefix('v1/mobile')->middleware(['api', \App\Http\Middleware\EnsureLocale::class, 'auth.optional'])->group(function () {
 
     // Auth — public endpoints
     Route::prefix('auth')->group(function () {
@@ -141,5 +212,30 @@ Route::prefix('v1/mobile')->middleware(['api', \App\Http\Middleware\EnsureLocale
         Route::get('cities',                CitiesController::class);
         Route::get('brands',                BrandsController::class);
         Route::get('brands/{brand}/models', BrandModelsController::class);
+        Route::get('colors',                ColorsController::class);
+    });
+
+    // Home & discovery — public (guest allowed; auth token enriches is_favorited)
+    Route::get('home',   HomeController::class);
+    Route::get('search', SearchCarsController::class);
+
+    // Cars — public browsing
+    Route::get('cars',                ListCarsController::class);
+    Route::get('cars/{car}',          ShowCarController::class);
+    Route::get('cars/{car}/ratings',  ListCarRatingsController::class);
+
+    // Cars — authenticated interactions
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('cars/{car}/ratings', StoreCarRatingController::class);
+        Route::get('favorites',           ListFavoritesController::class);
+        Route::post('favorites/{car}',    ToggleFavoriteController::class);
+        Route::get('my-listings',         MyListingsController::class);
+    });
+
+    // Showrooms — public
+    Route::prefix('showrooms')->group(function () {
+        Route::get('/',                 ListShowroomsController::class);
+        Route::get('{showroom}',        ShowShowroomController::class);
+        Route::get('{showroom}/cars',   ShowroomCarsController::class);
     });
 });

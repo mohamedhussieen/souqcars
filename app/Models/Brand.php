@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\HasOptimizedMedia;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\MediaLibrary\HasMedia;
@@ -12,7 +13,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 /** Represents a car brand (manufacturer) with associated models. */
 class Brand extends Model implements HasMedia
 {
-    use InteractsWithMedia, HasOptimizedMedia;
+    use HasFactory, InteractsWithMedia, HasOptimizedMedia;
 
     protected $fillable = ['name_ar', 'name_en'];
 
@@ -20,6 +21,12 @@ class Brand extends Model implements HasMedia
     public function carModels(): HasMany
     {
         return $this->hasMany(CarModel::class);
+    }
+
+    /** Returns all car listings under this brand. */
+    public function cars(): HasMany
+    {
+        return $this->hasMany(Car::class);
     }
 
     /** Registers the logo media collection allowing only a single file. */

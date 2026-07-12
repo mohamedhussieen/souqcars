@@ -24,8 +24,8 @@ trait ApiResponseTrait
         ], $code);
     }
 
-    /** Returns a successful paginated JSON response with meta block extracted from the paginator. */
-    public function successPaginated(LengthAwarePaginator $paginator, string $message = ''): JsonResponse
+    /** Returns a successful paginated JSON response with meta block extracted from the paginator, optionally merged with extra meta keys. */
+    public function successPaginated(LengthAwarePaginator $paginator, string $message = '', array $extraMeta = []): JsonResponse
     {
         if (empty($message)) {
             $message = __('messages.success');
@@ -35,14 +35,14 @@ trait ApiResponseTrait
             'success' => true,
             'message' => $message,
             'data'    => $paginator->items(),
-            'meta'    => [
+            'meta'    => array_merge([
                 'current_page'  => $paginator->currentPage(),
                 'per_page'      => $paginator->perPage(),
                 'total'         => $paginator->total(),
                 'last_page'     => $paginator->lastPage(),
                 'next_page_url' => $paginator->nextPageUrl(),
                 'prev_page_url' => $paginator->previousPageUrl(),
-            ],
+            ], $extraMeta),
             'errors'  => null,
         ], 200);
     }

@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use App\Exceptions\CarImageLimitExceededException;
 use App\Exceptions\PasswordResetException;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Auth\AuthenticationException;
@@ -40,6 +41,10 @@ class Handler extends ExceptionHandler
         }
 
         if ($e instanceof PasswordResetException) {
+            return $this->error(__($e->translationKey()), $e->status());
+        }
+
+        if ($e instanceof CarImageLimitExceededException) {
             return $this->error(__($e->translationKey()), $e->status());
         }
 
