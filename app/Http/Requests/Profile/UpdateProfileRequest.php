@@ -22,7 +22,7 @@ class UpdateProfileRequest extends FormRequest
         return [
             'name'   => ['required', 'string', 'max:255'],
             'phone'  => ['required', 'string', Rule::unique('users', 'phone')->ignore($userId)],
-            'avatar' => ['nullable', 'image', 'max:2048'],
+            'avatar' => ['nullable', 'file', 'mimes:jpeg,png,gif,bmp,svg,webp,heic,heif', 'max:2048'],
         ];
     }
 

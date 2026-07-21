@@ -35,6 +35,23 @@ class AdminUserService
         return $user->fresh();
     }
 
+    /** Deactivates the user and revokes all their Sanctum tokens. */
+    public function ban(User $user): User
+    {
+        $user->update(['is_active' => false]);
+        $user->tokens()->delete();
+
+        return $user->fresh();
+    }
+
+    /** Reactivates the user. */
+    public function unban(User $user): User
+    {
+        $user->update(['is_active' => true]);
+
+        return $user->fresh();
+    }
+
     /** Replaces the user's role with the given one. */
     public function updateRole(User $user, UserRole $role): User
     {

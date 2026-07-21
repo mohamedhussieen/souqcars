@@ -12,11 +12,13 @@ class AdminBrandResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'         => $this->id,
-            'name_ar'    => $this->name_ar,
-            'name_en'    => $this->name_en,
-            'logo_url'   => $this->logo_url,
-            'created_at' => $this->created_at?->toISOString(),
+            'id'           => $this->id,
+            'name_ar'      => $this->name_ar,
+            'name_en'      => $this->name_en,
+            'logo_url'     => $this->logo_url,
+            'cars_count'   => $this->whenCounted('cars', fn () => $this->cars_count) ?? $this->cars()->count(),
+            'models_count' => $this->whenCounted('carModels', fn () => $this->car_models_count) ?? $this->carModels()->count(),
+            'created_at'   => $this->created_at?->toISOString(),
         ];
     }
 }

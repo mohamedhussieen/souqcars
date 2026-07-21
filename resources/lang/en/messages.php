@@ -128,5 +128,88 @@ return [
         'color_updated'  => 'Color updated successfully.',
         'color_deleted'  => 'Color deleted successfully.',
         'color_in_use'   => 'This color is in use by one or more cars and cannot be deleted.',
+
+        'stats_fetched'     => 'Stats retrieved successfully.',
+        'analytics_fetched' => 'Analytics retrieved successfully.',
+
+        'maintenance_centers_fetched' => 'Maintenance centers retrieved successfully.',
+        'maintenance_center_fetched'  => 'Maintenance center retrieved successfully.',
+        'maintenance_center_created'  => 'Maintenance center created successfully.',
+        'maintenance_center_updated'  => 'Maintenance center updated successfully.',
+        'maintenance_center_deleted'  => 'Maintenance center deleted successfully.',
+        'maintenance_center_logo_uploaded' => 'Maintenance center logo uploaded successfully.',
+        'maintenance_center_has_bookings'  => 'This maintenance center has pending or confirmed bookings and cannot be deleted.',
+
+        'maintenance_service_created' => 'Service created successfully.',
+        'maintenance_service_updated' => 'Service updated successfully.',
+        'maintenance_service_deleted' => 'Service deleted successfully.',
+        'maintenance_service_has_bookings' => 'This service has pending or confirmed bookings and cannot be deleted.',
+
+        'bookings_fetched'       => 'Bookings retrieved successfully.',
+        'booking_status_updated' => 'Booking status updated successfully.',
+
+        'ad_toggled'    => 'Ad status toggled successfully.',
+        'ads_reordered' => 'Ads reordered successfully.',
+
+        'brand_logo_uploaded' => 'Brand logo uploaded successfully.',
+        'brand_has_cars'      => 'This brand has cars and cannot be deleted.',
+        'car_model_has_cars'  => 'This car model has cars and cannot be deleted.',
+        'city_has_cars'       => 'This city has cars and cannot be deleted.',
+
+        'watch_requests_fetched' => 'Watch requests retrieved successfully.',
+    ],
+
+    'maintenance' => [
+        'centers_fetched' => 'Maintenance centers retrieved successfully.',
+        'center_fetched'  => 'Maintenance center retrieved successfully.',
+    ],
+
+    'bookings' => [
+        'created'   => 'Booking created successfully.',
+        'fetched'   => 'Bookings retrieved successfully.',
+        'detail_fetched' => 'Booking retrieved successfully.',
+        'cancelled' => 'Booking cancelled successfully.',
+        'conflict'  => 'You already have a booking at this center on this date.',
+        'not_cancellable' => 'Only pending or confirmed bookings can be cancelled.',
+        'invalid_transition' => 'This booking status change is not allowed.',
+        'forbidden' => 'You are not allowed to access this booking.',
+    ],
+
+    'notifications' => [
+        'fetched'      => 'Notifications retrieved successfully.',
+        'marked_read'  => 'Notification marked as read.',
+        'all_marked_read' => 'All notifications marked as read.',
+        'unread_count' => 'Unread count retrieved successfully.',
+        'forbidden'    => 'You are not allowed to access this notification.',
+
+        'car_match_title'         => 'New match for you',
+        'car_match_body'          => 'A new listing matches your interests.',
+        'booking_confirmed_title' => 'Booking confirmed',
+        'booking_confirmed_body'  => 'Your booking has been confirmed.',
+        'booking_created_title'   => 'New booking received',
+        'booking_created_body'    => 'A new booking was just created.',
+        'booking_cancelled_title' => 'Booking cancelled',
+        'booking_cancelled_body'  => 'A booking has been cancelled.',
+        'booking_completed_title' => 'Booking completed',
+        'booking_completed_body'  => 'Your booking has been marked as completed.',
+        'price_drop_title'        => 'Price drop on a favorite',
+        'price_drop_body'         => 'A car in your favorites just dropped in price.',
+        'listing_approved_title'  => 'Listing approved',
+        'listing_approved_body'   => 'Your car listing has been approved.',
+        'listing_rejected_title'  => 'Listing rejected',
+        'listing_rejected_body'   => 'Your car listing has been rejected.',
+        'car_available_title'     => 'A car you were waiting for is available',
+        'car_available_body'      => 'A new car matching your watch request is now available.',
+    ],
+
+    'watch_requests' => [
+        'watched'   => 'You will be notified when this car becomes available.',
+        'unwatched' => 'Watch request removed.',
+        'fetched'   => 'Watch requests retrieved successfully.',
+        'not_sold'  => 'You can only watch a brand/model after this listing has been sold.',
+    ],
+
+    'profile_stats' => [
+        'fetched' => 'Profile stats retrieved successfully.',
     ],
 ];

@@ -56,4 +56,20 @@ class AdService
     {
         $ad->delete();
     }
+
+    /** Toggles the ad's active state. */
+    public function toggle(Ad $ad): Ad
+    {
+        $ad->update(['is_active' => !$ad->is_active]);
+
+        return $ad->fresh();
+    }
+
+    /** Bulk-updates sort_order for the given [{id, sort_order}] items. */
+    public function reorder(array $items): void
+    {
+        foreach ($items as $item) {
+            Ad::whereKey($item['id'])->update(['sort_order' => $item['sort_order']]);
+        }
+    }
 }

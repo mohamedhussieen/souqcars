@@ -2,11 +2,15 @@
 
 use App\Http\Controllers\Api\Admin\Ads\DeleteAdController;
 use App\Http\Controllers\Api\Admin\Ads\ListAdsController;
+use App\Http\Controllers\Api\Admin\Ads\ReorderAdsController;
 use App\Http\Controllers\Api\Admin\Ads\StoreAdController;
+use App\Http\Controllers\Api\Admin\Ads\ToggleAdController;
 use App\Http\Controllers\Api\Admin\Ads\UpdateAdController;
 use App\Http\Controllers\Api\Admin\Auth\AdminLoginController;
 use App\Http\Controllers\Api\Admin\Auth\AdminLogoutController;
 use App\Http\Controllers\Api\Admin\Auth\AdminMeController;
+use App\Http\Controllers\Api\Admin\Bookings\ListBookingsController as AdminListBookingsController;
+use App\Http\Controllers\Api\Admin\Bookings\UpdateBookingStatusController;
 use App\Http\Controllers\Api\Admin\Cars\DeleteCarController as AdminDeleteCarController;
 use App\Http\Controllers\Api\Admin\Cars\DeleteCarImageController;
 use App\Http\Controllers\Api\Admin\Cars\ListCarsController as AdminListCarsController;
@@ -28,6 +32,7 @@ use App\Http\Controllers\Api\Admin\Brands\DeleteBrandController;
 use App\Http\Controllers\Api\Admin\Brands\ListBrandsController;
 use App\Http\Controllers\Api\Admin\Brands\StoreBrandController;
 use App\Http\Controllers\Api\Admin\Brands\UpdateBrandController;
+use App\Http\Controllers\Api\Admin\Brands\UploadBrandLogoController;
 use App\Http\Controllers\Api\Admin\CarModels\DeleteCarModelController;
 use App\Http\Controllers\Api\Admin\CarModels\ListCarModelsController;
 use App\Http\Controllers\Api\Admin\CarModels\StoreCarModelController;
@@ -36,11 +41,27 @@ use App\Http\Controllers\Api\Admin\Cities\DeleteCityController;
 use App\Http\Controllers\Api\Admin\Cities\ListCitiesController;
 use App\Http\Controllers\Api\Admin\Cities\StoreCityController;
 use App\Http\Controllers\Api\Admin\Cities\UpdateCityController;
+use App\Http\Controllers\Api\Admin\Maintenance\DeleteMaintenanceCenterController;
+use App\Http\Controllers\Api\Admin\Maintenance\DeleteMaintenanceServiceController;
+use App\Http\Controllers\Api\Admin\Maintenance\ListMaintenanceCentersController as AdminListMaintenanceCentersController;
+use App\Http\Controllers\Api\Admin\Maintenance\StoreMaintenanceCenterController;
+use App\Http\Controllers\Api\Admin\Maintenance\StoreMaintenanceServiceController;
+use App\Http\Controllers\Api\Admin\Maintenance\UpdateMaintenanceCenterController;
+use App\Http\Controllers\Api\Admin\Maintenance\UpdateMaintenanceServiceController;
+use App\Http\Controllers\Api\Admin\Maintenance\UploadMaintenanceCenterLogoController;
+use App\Http\Controllers\Api\Admin\Stats\BookingsPerStatusController;
+use App\Http\Controllers\Api\Admin\Stats\CarsPerMonthController;
+use App\Http\Controllers\Api\Admin\Stats\DashboardStatsController;
+use App\Http\Controllers\Api\Admin\Stats\TopBrandsController;
+use App\Http\Controllers\Api\Admin\Stats\TopCitiesController;
+use App\Http\Controllers\Api\Admin\Users\BanUserController;
 use App\Http\Controllers\Api\Admin\Users\DeleteUserController;
 use App\Http\Controllers\Api\Admin\Users\ListUsersController;
 use App\Http\Controllers\Api\Admin\Users\ShowUserController;
 use App\Http\Controllers\Api\Admin\Users\ToggleUserActiveController;
+use App\Http\Controllers\Api\Admin\Users\UnbanUserController;
 use App\Http\Controllers\Api\Admin\Users\UpdateUserRoleController;
+use App\Http\Controllers\Api\Admin\WatchRequests\WatchRequestOverviewController;
 use App\Http\Controllers\Api\Core\AppConfigController;
 use App\Http\Controllers\Api\Core\PolicyTermsController;
 use App\Http\Controllers\Api\Mobile\Auth\LoginController;
@@ -51,6 +72,10 @@ use App\Http\Controllers\Api\Mobile\Auth\PasswordReset\ForgotPasswordController;
 use App\Http\Controllers\Api\Mobile\Auth\PasswordReset\ResetPasswordController;
 use App\Http\Controllers\Api\Mobile\Auth\PasswordReset\VerifyResetOtpController;
 use App\Http\Controllers\Api\Mobile\Auth\RegisterController;
+use App\Http\Controllers\Api\Mobile\Bookings\CancelBookingController;
+use App\Http\Controllers\Api\Mobile\Bookings\CreateBookingController;
+use App\Http\Controllers\Api\Mobile\Bookings\ListBookingsController;
+use App\Http\Controllers\Api\Mobile\Bookings\ShowBookingController;
 use App\Http\Controllers\Api\Mobile\Cars\ListCarsController;
 use App\Http\Controllers\Api\Mobile\Cars\SearchCarsController;
 use App\Http\Controllers\Api\Mobile\Cars\ShowCarController;
@@ -61,7 +86,14 @@ use App\Http\Controllers\Api\Mobile\Lookup\BrandModelsController;
 use App\Http\Controllers\Api\Mobile\Lookup\BrandsController;
 use App\Http\Controllers\Api\Mobile\Lookup\CitiesController;
 use App\Http\Controllers\Api\Mobile\Lookup\ColorsController;
+use App\Http\Controllers\Api\Mobile\Maintenance\ListMaintenanceCentersController;
+use App\Http\Controllers\Api\Mobile\Maintenance\ShowMaintenanceCenterController;
 use App\Http\Controllers\Api\Mobile\MyListings\MyListingsController;
+use App\Http\Controllers\Api\Mobile\Notifications\ListNotificationsController;
+use App\Http\Controllers\Api\Mobile\Notifications\MarkAllNotificationsReadController;
+use App\Http\Controllers\Api\Mobile\Notifications\MarkNotificationReadController;
+use App\Http\Controllers\Api\Mobile\Notifications\UnreadNotificationCountController;
+use App\Http\Controllers\Api\Mobile\Profile\ProfileStatsController;
 use App\Http\Controllers\Api\Mobile\Ratings\ListCarRatingsController;
 use App\Http\Controllers\Api\Mobile\Ratings\StoreCarRatingController;
 use App\Http\Controllers\Api\Mobile\Showrooms\ListShowroomsController;
@@ -73,6 +105,9 @@ use App\Http\Controllers\Api\Mobile\Profile\DeleteAccountController;
 use App\Http\Controllers\Api\Mobile\Profile\ShowProfileController;
 use App\Http\Controllers\Api\Mobile\Profile\UpdatePreferencesController;
 use App\Http\Controllers\Api\Mobile\Profile\UpdateProfileController;
+use App\Http\Controllers\Api\Mobile\WatchRequests\ListWatchRequestsController;
+use App\Http\Controllers\Api\Mobile\WatchRequests\UnwatchCarController;
+use App\Http\Controllers\Api\Mobile\WatchRequests\WatchCarController;
 use Illuminate\Support\Facades\Route;
 
 // Core — public, app-level maintenance/upgrade config
@@ -86,7 +121,7 @@ Route::prefix('core')->middleware(['api', \App\Http\Middleware\EnsureLocale::cla
 });
 
 // Admin dashboard — separate auth/guard scope from the mobile API
-Route::prefix('admin')->middleware('api')->group(function () {
+Route::prefix('admin')->middleware(['api', 'throttle:admin-api'])->group(function () {
 
     // Auth — public
     Route::post('auth/login', AdminLoginController::class);
@@ -97,11 +132,22 @@ Route::prefix('admin')->middleware('api')->group(function () {
         Route::post('auth/logout',  AdminLogoutController::class);
     });
 
+    // Stats & analytics — protected, requires the admin role
+    Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+        Route::get('stats',                        DashboardStatsController::class);
+        Route::get('analytics/cars-per-month',      CarsPerMonthController::class);
+        Route::get('analytics/bookings-per-status', BookingsPerStatusController::class);
+        Route::get('analytics/top-brands',          TopBrandsController::class);
+        Route::get('analytics/top-cities',          TopCitiesController::class);
+    });
+
     // Users CRUD — protected, requires the admin role
     Route::prefix('users')->middleware(['auth:sanctum', 'admin'])->group(function () {
         Route::get('/',                 ListUsersController::class);
         Route::get('{user}',            ShowUserController::class);
         Route::put('{user}/toggle-active', ToggleUserActiveController::class);
+        Route::put('{user}/ban',        BanUserController::class);
+        Route::put('{user}/unban',      UnbanUserController::class);
         Route::put('{user}/role',       UpdateUserRoleController::class);
         Route::delete('{user}',         DeleteUserController::class);
     });
@@ -120,6 +166,7 @@ Route::prefix('admin')->middleware('api')->group(function () {
         Route::post('/',        StoreBrandController::class);
         Route::put('{brand}',   UpdateBrandController::class);
         Route::delete('{brand}', DeleteBrandController::class);
+        Route::post('{brand}/logo', UploadBrandLogoController::class);
     });
 
     // Car Models CRUD — protected, requires the admin role
@@ -155,9 +202,33 @@ Route::prefix('admin')->middleware('api')->group(function () {
     Route::prefix('ads')->middleware(['auth:sanctum', 'admin'])->group(function () {
         Route::get('/',      ListAdsController::class);
         Route::post('/',     StoreAdController::class);
+        Route::put('reorder', ReorderAdsController::class);
         Route::put('{ad}',   UpdateAdController::class);
         Route::delete('{ad}', DeleteAdController::class);
+        Route::put('{ad}/toggle', ToggleAdController::class);
     });
+
+    // Maintenance centers + services CRUD — protected, requires the admin role
+    Route::prefix('maintenance-centers')->middleware(['auth:sanctum', 'admin'])->group(function () {
+        Route::get('/',         AdminListMaintenanceCentersController::class);
+        Route::post('/',        StoreMaintenanceCenterController::class);
+        Route::put('{center}',  UpdateMaintenanceCenterController::class);
+        Route::delete('{center}', DeleteMaintenanceCenterController::class);
+        Route::post('{center}/logo', UploadMaintenanceCenterLogoController::class);
+
+        Route::post('{center}/services',            StoreMaintenanceServiceController::class);
+        Route::put('{center}/services/{service}',    UpdateMaintenanceServiceController::class);
+        Route::delete('{center}/services/{service}', DeleteMaintenanceServiceController::class);
+    });
+
+    // Bookings management — protected, requires the admin role
+    Route::prefix('bookings')->middleware(['auth:sanctum', 'admin'])->group(function () {
+        Route::get('/',                AdminListBookingsController::class);
+        Route::put('{booking}/status', UpdateBookingStatusController::class);
+    });
+
+    // Watch requests overview (read-only) — protected, requires the admin role
+    Route::middleware(['auth:sanctum', 'admin'])->get('watch-requests', WatchRequestOverviewController::class);
 
     // Colors CRUD — protected, requires the admin role
     Route::prefix('colors')->middleware(['auth:sanctum', 'admin'])->group(function () {
@@ -168,10 +239,10 @@ Route::prefix('admin')->middleware('api')->group(function () {
     });
 });
 
-Route::prefix('v1/mobile')->middleware(['api', \App\Http\Middleware\EnsureLocale::class, 'auth.optional'])->group(function () {
+Route::prefix('v1/mobile')->middleware(['api', \App\Http\Middleware\EnsureLocale::class, 'auth.optional', 'throttle:mobile-api'])->group(function () {
 
     // Auth — public endpoints
-    Route::prefix('auth')->group(function () {
+    Route::prefix('auth')->middleware('throttle:mobile-auth')->group(function () {
         Route::post('register',         RegisterController::class);
         Route::post('login',            LoginController::class);
         Route::post('otp/send',         OtpSendController::class);
@@ -230,6 +301,12 @@ Route::prefix('v1/mobile')->middleware(['api', \App\Http\Middleware\EnsureLocale
         Route::get('favorites',           ListFavoritesController::class);
         Route::post('favorites/{car}',    ToggleFavoriteController::class);
         Route::get('my-listings',         MyListingsController::class);
+
+        Route::post('cars/{car}/watch',   WatchCarController::class);
+        Route::delete('cars/{car}/watch', UnwatchCarController::class);
+        Route::get('watch-requests',      ListWatchRequestsController::class);
+
+        Route::get('profile/stats', ProfileStatsController::class);
     });
 
     // Showrooms — public
@@ -237,5 +314,27 @@ Route::prefix('v1/mobile')->middleware(['api', \App\Http\Middleware\EnsureLocale
         Route::get('/',                 ListShowroomsController::class);
         Route::get('{showroom}',        ShowShowroomController::class);
         Route::get('{showroom}/cars',   ShowroomCarsController::class);
+    });
+
+    // Maintenance centers — public browsing
+    Route::prefix('maintenance-centers')->group(function () {
+        Route::get('/',        ListMaintenanceCentersController::class);
+        Route::get('{center}', ShowMaintenanceCenterController::class);
+    });
+
+    // Bookings — authenticated
+    Route::prefix('bookings')->middleware('auth:sanctum')->group(function () {
+        Route::post('/',               CreateBookingController::class);
+        Route::get('/',                ListBookingsController::class);
+        Route::get('{booking}',        ShowBookingController::class);
+        Route::delete('{booking}/cancel', CancelBookingController::class);
+    });
+
+    // Notifications — authenticated
+    Route::prefix('notifications')->middleware('auth:sanctum')->group(function () {
+        Route::get('/',              ListNotificationsController::class);
+        Route::get('unread-count',   UnreadNotificationCountController::class);
+        Route::put('read-all',       MarkAllNotificationsReadController::class);
+        Route::put('{notification}/read', MarkNotificationReadController::class);
     });
 });

@@ -16,6 +16,7 @@ class AdminCarModelResource extends JsonResource
             'brand_id'   => $this->brand_id,
             'name_ar'    => $this->name_ar,
             'name_en'    => $this->name_en,
+            'cars_count' => $this->whenCounted('cars', fn () => $this->cars_count) ?? $this->cars()->count(),
             'created_at' => $this->created_at?->toISOString(),
         ];
     }

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\HasDependentRecordsException;
 use App\Models\CarModel;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -31,9 +32,13 @@ class AdminCarModelService
         return $carModel->fresh();
     }
 
-    /** Deletes the given car model. */
+    /** Deletes the given car model. Throws HasDependentRecordsException if it has any cars. */
     public function delete(CarModel $carModel): void
     {
+        if ($carModel->cars()->exists()) {
+            throw new HasDependentRecordsException('messages.admin.car_model_has_cars');
+        }
+
         $carModel->delete();
     }
 }

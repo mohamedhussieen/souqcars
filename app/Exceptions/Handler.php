@@ -2,7 +2,13 @@
 
 namespace App\Exceptions;
 
+use App\Exceptions\BookingConflictException;
+use App\Exceptions\BookingNotCancellableException;
 use App\Exceptions\CarImageLimitExceededException;
+use App\Exceptions\HasDependentRecordsException;
+use App\Exceptions\InvalidBookingStatusTransitionException;
+use App\Exceptions\InvalidCarStateException;
+use App\Exceptions\NotOwnerException;
 use App\Exceptions\PasswordResetException;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Auth\AuthenticationException;
@@ -10,6 +16,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 /** Global exception handler that normalizes all exceptions into the unified API response shape. */
@@ -48,11 +55,22 @@ class Handler extends ExceptionHandler
             return $this->error(__($e->translationKey()), $e->status());
         }
 
-        if ($e instanceof ThrottleRequestsException) {
-            return $this->error(__('messages.throttled'), 429);
+        if (
+            $e instanceof BookingConflictException
+            || $e instanceof BookingNotCancellableException
+            || $e instanceof InvalidBookingStatusTransitionException
+            || $e instanceof HasDependentRecordsException
+            || $e instanceof InvalidCarStateException
+            || $e instanceof NotOwnerException
+        ) {
+            return $this->error(__($e->translationKey()), $e->status());
         }
 
-        if ($e instanceof ModelNotFoundException) {
+        if ($e instanceof ThrottleRequestsException) {
+            return $this->error(__('messages.throttled'), 429)->withHeaders($e->getHeaders());
+        }
+
+        if ($e instanceof ModelNotFoundException || $e instanceof NotFoundHttpException) {
             return $this->notFound(__('messages.not_found'));
         }
 

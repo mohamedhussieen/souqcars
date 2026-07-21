@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Models\Brand;
 use App\Models\Car;
+use App\Models\CarModel;
 use App\Models\City;
 use App\Models\Color;
 use App\Services\CarFilterService;
@@ -168,5 +169,105 @@ class CarFilterServiceTest extends TestCase
         ])->get();
 
         $this->assertCount(2, $result);
+    }
+
+    public function test_filters_by_car_model_id(): void
+    {
+        $carModel = CarModel::factory()->create();
+        $match = Car::factory()->create(['car_model_id' => $carModel->id]);
+        Car::factory()->create();
+
+        $result = $this->service->apply(Car::query(), ['car_model_id' => $carModel->id])->get();
+
+        $this->assertCount(1, $result);
+        $this->assertTrue($result->first()->is($match));
+    }
+
+    public function test_filters_by_condition(): void
+    {
+        $match = Car::factory()->create(['condition' => 'new']);
+        Car::factory()->create(['condition' => 'used']);
+
+        $result = $this->service->apply(Car::query(), ['condition' => 'new'])->get();
+
+        $this->assertCount(1, $result);
+        $this->assertTrue($result->first()->is($match));
+    }
+
+    public function test_filters_by_transmission(): void
+    {
+        $match = Car::factory()->create(['transmission' => 'manual']);
+        Car::factory()->create(['transmission' => 'automatic']);
+
+        $result = $this->service->apply(Car::query(), ['transmission' => 'manual'])->get();
+
+        $this->assertCount(1, $result);
+        $this->assertTrue($result->first()->is($match));
+    }
+
+    public function test_filters_by_fuel_type(): void
+    {
+        $match = Car::factory()->create(['fuel_type' => 'diesel']);
+        Car::factory()->create(['fuel_type' => 'petrol']);
+
+        $result = $this->service->apply(Car::query(), ['fuel_type' => 'diesel'])->get();
+
+        $this->assertCount(1, $result);
+        $this->assertTrue($result->first()->is($match));
+    }
+
+    public function test_filters_by_body_type(): void
+    {
+        $match = Car::factory()->create(['body_type' => 'suv']);
+        Car::factory()->create(['body_type' => 'sedan']);
+
+        $result = $this->service->apply(Car::query(), ['body_type' => 'suv'])->get();
+
+        $this->assertCount(1, $result);
+        $this->assertTrue($result->first()->is($match));
+    }
+
+    public function test_filters_by_payment_type(): void
+    {
+        $match = Car::factory()->create(['payment_type' => 'installment']);
+        Car::factory()->create(['payment_type' => 'cash']);
+
+        $result = $this->service->apply(Car::query(), ['payment_type' => 'installment'])->get();
+
+        $this->assertCount(1, $result);
+        $this->assertTrue($result->first()->is($match));
+    }
+
+    public function test_filters_by_seller_type(): void
+    {
+        $match = Car::factory()->create(['seller_type' => 'individual']);
+        Car::factory()->create(['seller_type' => 'admin']);
+
+        $result = $this->service->apply(Car::query(), ['seller_type' => 'individual'])->get();
+
+        $this->assertCount(1, $result);
+        $this->assertTrue($result->first()->is($match));
+    }
+
+    public function test_sorts_by_oldest(): void
+    {
+        $older = Car::factory()->create(['created_at' => now()->subDay()]);
+        $newer = Car::factory()->create(['created_at' => now()]);
+
+        $result = $this->service->apply(Car::query(), ['sort_by' => 'oldest'])->get();
+
+        $this->assertTrue($result->first()->is($older));
+        $this->assertTrue($result->last()->is($newer));
+    }
+
+    public function test_sorts_by_mileage_ascending(): void
+    {
+        $highMileage = Car::factory()->create(['mileage' => 200000]);
+        $lowMileage = Car::factory()->create(['mileage' => 10000]);
+
+        $result = $this->service->apply(Car::query(), ['sort_by' => 'mileage_asc'])->get();
+
+        $this->assertTrue($result->first()->is($lowMileage));
+        $this->assertTrue($result->last()->is($highMileage));
     }
 }

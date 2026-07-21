@@ -91,4 +91,10 @@ class User extends Authenticatable implements HasMedia
     {
         return $this->hasMany(CarRating::class);
     }
+
+    /** Returns all in-app notifications sent to this user. */
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(Notification::class);
+    }
 }

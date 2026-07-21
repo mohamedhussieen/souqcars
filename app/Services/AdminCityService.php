@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\HasDependentRecordsException;
 use App\Models\City;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -28,9 +29,13 @@ class AdminCityService
         return $city->fresh();
     }
 
-    /** Deletes the given city. */
+    /** Deletes the given city. Throws HasDependentRecordsException if it has any cars. */
     public function delete(City $city): void
     {
+        if ($city->cars()->exists()) {
+            throw new HasDependentRecordsException('messages.admin.city_has_cars');
+        }
+
         $city->delete();
     }
 }

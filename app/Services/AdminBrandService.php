@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\HasDependentRecordsException;
 use App\Models\Brand;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -39,9 +40,13 @@ class AdminBrandService
         return $brand->fresh();
     }
 
-    /** Deletes the given brand along with its car models (cascade) and media. */
+    /** Deletes the given brand. Throws HasDependentRecordsException if it has any cars. */
     public function delete(Brand $brand): void
     {
+        if ($brand->cars()->exists()) {
+            throw new HasDependentRecordsException('messages.admin.brand_has_cars');
+        }
+
         $brand->delete();
     }
 }

@@ -2,7 +2,11 @@
 
 namespace App\Providers;
 
+use App\Models\Car;
+use App\Observers\CarObserver;
 use Illuminate\Auth\Middleware\Authenticate;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 use Kreait\Firebase\Contract\Messaging;
@@ -30,5 +34,25 @@ class AppServiceProvider extends ServiceProvider
         // unauthenticated requests (avoids a 500 from the missing 'login' named route
         // when a client omits Accept: application/json).
         Authenticate::redirectUsing(fn () => null);
+
+        Car::observe(CarObserver::class);
+
+        $this->registerRateLimiters();
+    }
+
+    /** Registers named rate limiters used by the `throttle:` middleware across mobile and admin route groups. */
+    private function registerRateLimiters(): void
+    {
+        RateLimiter::for('mobile-auth', fn ($request) => Limit::perMinute(10)->by($request->ip()));
+
+        RateLimiter::for('mobile-sensitive', fn ($request) => Limit::perMinute(3)->by($request->ip()));
+
+        RateLimiter::for('mobile-api', function ($request) {
+            return $request->user()
+                ? Limit::perMinute(60)->by($request->user()->id)
+                : Limit::perMinute(30)->by($request->ip());
+        });
+
+        RateLimiter::for('admin-api', fn ($request) => Limit::perMinute(120)->by($request->user()?->id ?: $request->ip()));
     }
 }

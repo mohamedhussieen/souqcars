@@ -21,6 +21,7 @@ class HomeService
             'ads' => $this->adService->activeAds()->take(10)->values(),
             'brands' => Brand::query()
                 ->withCount('cars')
+                ->groupBy('brands.id')
                 ->having('cars_count', '>', 0)
                 ->limit(10)
                 ->get(),
